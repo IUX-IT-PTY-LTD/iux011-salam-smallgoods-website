@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafaf5;
+  --foreground: #3d1a0e;
 }
 
 @theme inline {
@@ -12,16 +12,189 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* ─── Claymorphism Utilities ────────────────────────────── */
+
+.clay-card {
+  border-radius: 24px;
+  background: linear-gradient(145deg, #fff8f0, #ffeedd);
+  box-shadow:
+    8px 8px 0px #e0b99a,
+    inset 2px 2px 8px #ffffff,
+    inset -1px -1px 4px #e8c5a0;
+}
+
+.clay-card-strong {
+  border-radius: 28px;
+  background: linear-gradient(145deg, #fff3e8, #ffe6cc);
+  box-shadow:
+    10px 10px 0px #d4a07a,
+    inset 3px 3px 10px #ffffff,
+    inset -2px -2px 6px #e8c5a0;
+}
+
+.clay-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(145deg, #ff8080, #ff5555);
+  box-shadow:
+    4px 4px 0px #cc3333,
+    inset 2px 2px 6px #ff9999;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+.clay-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    6px 6px 0px #cc3333,
+    inset 2px 2px 6px #ff9999;
+}
+.clay-btn-primary:active {
+  transform: translateY(1px);
+  box-shadow:
+    2px 2px 0px #cc3333,
+    inset 2px 2px 6px #ff9999;
+}
+
+.clay-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-weight: 700;
+  color: #3d1a0e;
+  background: linear-gradient(145deg, #fff8f0, #ffe8d0);
+  box-shadow:
+    4px 4px 0px #d4a07a,
+    inset 2px 2px 6px #ffffff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+.clay-btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    6px 6px 0px #d4a07a,
+    inset 2px 2px 6px #ffffff;
+}
+.clay-btn-secondary:active {
+  transform: translateY(1px);
+  box-shadow:
+    2px 2px 0px #d4a07a,
+    inset 2px 2px 6px #ffffff;
+}
+
+.clay-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #8b6f6f;
+  background: linear-gradient(145deg, #fff8f0, #ffeedd);
+  box-shadow:
+    3px 3px 0px #e0b99a,
+    inset 1px 1px 4px #ffffff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  border: none;
+}
+.clay-filter-btn:hover {
+  color: #3d1a0e;
+  transform: translateY(-1px);
+}
+
+.clay-filter-btn-active {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #ffffff;
+  background: linear-gradient(145deg, #ff8080, #ff5555);
+  box-shadow:
+    3px 3px 0px #cc3333,
+    inset 2px 2px 6px #ff9999;
+  cursor: pointer;
+  border: none;
+}
+
+.clay-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 700;
+  background: linear-gradient(145deg, #fff8f0, #ffeedd);
+  box-shadow:
+    3px 3px 0px #e0b99a,
+    inset 1px 1px 4px #ffffff;
+}
+
+.clay-banner {
+  border-radius: 28px;
+  background: linear-gradient(135deg, #ff8c69 0%, #ff6b6b 50%, #ffa07a 100%);
+  box-shadow:
+    8px 8px 0px #cc5533,
+    inset 2px 2px 10px #ffaa88;
+  padding: 48px 40px;
+}
+
+/* ─── Responsive layout helpers ─────────────────────────── */
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-grid .hero-visual {
+    display: none;
+  }
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
