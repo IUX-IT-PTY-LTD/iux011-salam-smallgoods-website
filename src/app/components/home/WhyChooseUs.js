@@ -4,24 +4,24 @@ const features = [
     title: 'Halal Certified',
     description:
       'All our meats are certified halal, sourced from trusted suppliers with full traceability.',
-    bg: 'linear-gradient(145deg, #E8C8D8, #D8A8C0)',
-    shadow: '#B87898',
+    bg: 'linear-gradient(145deg, #F0D4B8, #E8C098)',
+    shadow: '#C09060',
   },
   {
     emoji: '🌿',
     title: 'Fresh Daily Cuts',
     description:
       'We butcher fresh every morning so you always get the best quality, never frozen.',
-    bg: 'linear-gradient(145deg, #C8DFC8, #A8CCA8)',
-    shadow: '#78A878',
+    bg: 'linear-gradient(145deg, #D4DDB0, #C4CD90)',
+    shadow: '#8A9C50',
   },
   {
     emoji: '👨‍👩‍👧',
     title: 'Family Recipe',
     description:
       'Our smallgoods and sausages are made using traditional family recipes passed down for generations.',
-    bg: 'linear-gradient(145deg, #E8D898, #D8C070)',
-    shadow: '#B89840',
+    bg: 'linear-gradient(145deg, #EED4A0, #E0C080)',
+    shadow: '#B89040',
   },
 ];
 
@@ -35,14 +35,14 @@ export default function WhyChooseUs() {
     >
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <div style={{ color: '#CC3A20', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>
+          <div style={{ color: 'var(--color-accent)', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>
             WHY US
           </div>
           <h2
             style={{
               fontWeight: 900,
               fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)',
-              color: '#2A0D04',
+              color: 'var(--color-ink)',
               margin: 0,
             }}
           >
@@ -73,13 +73,13 @@ export default function WhyChooseUs() {
                 style={{
                   fontWeight: 800,
                   fontSize: 19,
-                  color: '#2A0D04',
+                  color: 'var(--color-ink)',
                   marginBottom: 12,
                 }}
               >
                 {f.title}
               </div>
-              <p style={{ fontSize: 14, color: '#5A3020', lineHeight: 1.65, margin: 0 }}>
+              <p style={{ fontSize: 14, color: 'var(--color-body)', lineHeight: 1.65, margin: 0 }}>
                 {f.description}
               </p>
             </div>

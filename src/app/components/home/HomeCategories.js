@@ -19,14 +19,14 @@ export default function HomeCategories() {
           }}
         >
           <div>
-            <div style={{ color: '#CC3A20', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>
+            <div style={{ color: 'var(--color-accent)', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>
               BROWSE BY CATEGORY
             </div>
             <h2
               style={{
                 fontWeight: 900,
                 fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)',
-                color: '#2A0D04',
+                color: 'var(--color-ink)',
                 margin: 0,
               }}
             >
@@ -78,7 +78,7 @@ export default function HomeCategories() {
                     style={{
                       fontWeight: 800,
                       fontSize: 16,
-                      color: '#2A0D04',
+                      color: 'var(--color-ink)',
                       marginBottom: 6,
                     }}
                   >
@@ -87,7 +87,7 @@ export default function HomeCategories() {
                   <div
                     style={{
                       fontSize: 12,
-                      color: '#7A5040',
+                      color: 'var(--color-muted)',
                       lineHeight: 1.4,
                       marginBottom: 12,
                     }}
@@ -101,9 +101,9 @@ export default function HomeCategories() {
                       borderRadius: 50,
                       fontSize: 11,
                       fontWeight: 700,
-                      background: 'linear-gradient(145deg, #CC3A20, #B02808)',
-                      color: '#fff',
-                      boxShadow: '2px 2px 0px #7A1808',
+                      background: 'linear-gradient(145deg, var(--color-surface-raised), var(--color-surface-mid))',
+                      color: 'var(--color-ink)',
+                      boxShadow: '2px 2px 0px var(--color-shadow)',
                     }}
                   >
                     {count} items

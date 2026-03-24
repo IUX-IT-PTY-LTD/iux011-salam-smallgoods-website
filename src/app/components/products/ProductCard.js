@@ -11,18 +11,13 @@ export default function ProductCard({ product }) {
         height: '100%',
       }}
     >
-      {/* Emoji */}
-      <div
-        style={{
-          fontSize: 56,
-          textAlign: 'center',
-          marginBottom: 14,
-          background: 'linear-gradient(145deg, #E8CCA8, #DCBC88)',
-          borderRadius: 16,
-          padding: '16px 0',
-        }}
-      >
-        {product.emoji}
+      {/* Product image */}
+      <div className="product-image-container">
+        <img
+          src={product.image}
+          alt={product.name}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
       </div>
 
       {/* Category badge + stock status */}
@@ -34,9 +29,9 @@ export default function ProductCard({ product }) {
             borderRadius: 50,
             fontSize: 11,
             fontWeight: 700,
-            background: 'linear-gradient(145deg, #EDD5B0, #E0C090)',
-            color: '#CC3A20',
-            boxShadow: '2px 2px 0px #B8784A',
+            background: 'linear-gradient(145deg, var(--color-surface-raised), var(--color-surface-mid))',
+            color: 'var(--color-ink)',
+            boxShadow: '2px 2px 0px var(--color-shadow)',
           }}
         >
           {product.category}
@@ -48,11 +43,9 @@ export default function ProductCard({ product }) {
             borderRadius: 50,
             fontSize: 11,
             fontWeight: 700,
-            background: product.inStock
-              ? 'linear-gradient(145deg, #4CAF50, #388E3C)'
-              : 'linear-gradient(145deg, #E53935, #B71C1C)',
+            background: product.inStock ? '#3E6B2A' : '#A83020',
             color: '#fff',
-            boxShadow: product.inStock ? '2px 2px 0px #2E7D32' : '2px 2px 0px #7F0000',
+            boxShadow: product.inStock ? '2px 2px 0px #1E3A10' : '2px 2px 0px #4A0C00',
           }}
         >
           {product.inStock ? 'In Stock' : 'Out of Stock'}
@@ -64,7 +57,7 @@ export default function ProductCard({ product }) {
         style={{
           fontWeight: 800,
           fontSize: 16,
-          color: '#2A0D04',
+          color: 'var(--color-ink)',
           marginBottom: 8,
           lineHeight: 1.3,
         }}
@@ -76,7 +69,7 @@ export default function ProductCard({ product }) {
       <p
         style={{
           fontSize: 13,
-          color: '#7A5040',
+          color: 'var(--color-muted)',
           lineHeight: 1.55,
           margin: '0 0 20px',
           flex: 1,

@@ -44,7 +44,7 @@ export default async function ProductPage({ params }) {
         {/* Hero banner */}
         <section
           style={{
-            background: 'linear-gradient(135deg, #CC3A20 0%, #A02010 50%, #D04A28 100%)',
+            background: 'linear-gradient(135deg, var(--color-accent) 0%, #A02010 50%, #D04A28 100%)',
             padding: '48px 24px 64px',
           }}
         >
@@ -82,24 +82,25 @@ export default async function ProductPage({ params }) {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: '200px 1fr',
+                gridTemplateColumns: '240px 1fr',
                 gap: 40,
                 alignItems: 'center',
               }}
             >
-              {/* Emoji tile */}
+              {/* Product image tile */}
               <div
                 style={{
-                  fontSize: 96,
-                  textAlign: 'center',
-                  background: 'rgba(255,255,255,0.12)',
-                  borderRadius: 28,
-                  padding: '32px 0',
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)',
-                  backdropFilter: 'blur(4px)',
+                  borderRadius: 20,
+                  overflow: 'hidden',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+                  aspectRatio: '4 / 3',
                 }}
               >
-                {product.emoji}
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
               </div>
 
               {/* Title block */}
@@ -126,11 +127,9 @@ export default async function ProductPage({ params }) {
                       borderRadius: 50,
                       fontSize: 12,
                       fontWeight: 700,
-                      background: product.inStock
-                        ? 'linear-gradient(145deg, #4CAF50, #388E3C)'
-                        : 'linear-gradient(145deg, #E53935, #B71C1C)',
+                      background: product.inStock ? '#3E6B2A' : '#A83020',
                       color: '#fff',
-                      boxShadow: product.inStock ? '0 2px 8px rgba(56,142,60,0.4)' : '0 2px 8px rgba(183,28,28,0.4)',
+                      boxShadow: product.inStock ? '0 2px 8px rgba(62,107,42,0.5)' : '0 2px 8px rgba(168,48,32,0.5)',
                     }}
                   >
                     {product.inStock ? '● In Stock' : '● Out of Stock'}
@@ -180,7 +179,7 @@ export default async function ProductPage({ params }) {
                 <div className="clay-card" style={{ padding: '40px 36px' }}>
                   <div
                     style={{
-                      color: '#CC3A20',
+                      color: 'var(--color-accent)',
                       fontWeight: 700,
                       fontSize: 13,
                       letterSpacing: '0.08em',
@@ -193,7 +192,7 @@ export default async function ProductPage({ params }) {
                     style={{
                       fontWeight: 900,
                       fontSize: 'clamp(1.3rem, 2vw, 1.7rem)',
-                      color: '#2A0D04',
+                      color: 'var(--color-ink)',
                       margin: '0 0 20px',
                     }}
                   >
@@ -202,7 +201,7 @@ export default async function ProductPage({ params }) {
                   <p
                     style={{
                       fontSize: 15,
-                      color: '#5A3020',
+                      color: 'var(--color-body)',
                       lineHeight: 1.85,
                       margin: 0,
                     }}
@@ -228,13 +227,13 @@ export default async function ProductPage({ params }) {
                       style={{
                         fontWeight: 800,
                         fontSize: 16,
-                        color: '#2A0D04',
+                        color: 'var(--color-ink)',
                         marginBottom: 6,
                       }}
                     >
                       Interested in this product?
                     </div>
-                    <div style={{ fontSize: 13, color: '#7A5040', lineHeight: 1.5 }}>
+                    <div style={{ fontSize: 13, color: 'var(--color-muted)', lineHeight: 1.5 }}>
                       Visit us in-store or get in touch to place an order or ask a question.
                     </div>
                   </div>
@@ -261,12 +260,8 @@ export default async function ProductPage({ params }) {
                       height: 48,
                       borderRadius: 14,
                       flexShrink: 0,
-                      background: product.inStock
-                        ? 'linear-gradient(145deg, #4CAF50, #388E3C)'
-                        : 'linear-gradient(145deg, #E53935, #B71C1C)',
-                      boxShadow: product.inStock
-                        ? '3px 3px 0px #2E7D32'
-                        : '3px 3px 0px #7F0000',
+                      background: product.inStock ? '#3E6B2A' : '#A83020',
+                      boxShadow: product.inStock ? '3px 3px 0px #1E3A10' : '3px 3px 0px #4A0C00',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -282,13 +277,13 @@ export default async function ProductPage({ params }) {
                       style={{
                         fontWeight: 800,
                         fontSize: 15,
-                        color: '#2A0D04',
+                        color: 'var(--color-ink)',
                         marginBottom: 3,
                       }}
                     >
                       {product.inStock ? 'In Stock' : 'Out of Stock'}
                     </div>
-                    <div style={{ fontSize: 12, color: '#7A5040', lineHeight: 1.4 }}>
+                    <div style={{ fontSize: 12, color: 'var(--color-muted)', lineHeight: 1.4 }}>
                       {product.inStock
                         ? 'Available now — visit us in-store.'
                         : 'Currently unavailable. Contact us for updates.'}
@@ -306,13 +301,13 @@ export default async function ProductPage({ params }) {
                     style={{
                       fontWeight: 800,
                       fontSize: 15,
-                      color: '#2A0D04',
+                      color: 'var(--color-ink)',
                       marginBottom: 6,
                     }}
                   >
                     100% Halal Certified
                   </div>
-                  <div style={{ fontSize: 13, color: '#7A5040', lineHeight: 1.5 }}>
+                  <div style={{ fontSize: 13, color: 'var(--color-muted)', lineHeight: 1.5 }}>
                     All products carry full halal certification from trusted Australian bodies.
                   </div>
                 </div>
@@ -335,7 +330,7 @@ export default async function ProductPage({ params }) {
                   <div>
                     <div
                       style={{
-                        color: '#CC3A20',
+                        color: 'var(--color-accent)',
                         fontWeight: 700,
                         fontSize: 13,
                         letterSpacing: '0.08em',
@@ -348,7 +343,7 @@ export default async function ProductPage({ params }) {
                       style={{
                         fontWeight: 900,
                         fontSize: 'clamp(1.3rem, 2vw, 1.6rem)',
-                        color: '#2A0D04',
+                        color: 'var(--color-ink)',
                         margin: 0,
                       }}
                     >

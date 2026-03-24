@@ -19,33 +19,33 @@ export default function AboutSnippet() {
           >
             <div style={{ fontSize: 80 }}>🏪</div>
             <div style={{ fontSize: 32 }}>🥩 🌭 🍖 🍗</div>
-            <div style={{ fontWeight: 700, color: '#7A5040', fontSize: 14 }}>
+            <div style={{ fontWeight: 700, color: 'var(--color-muted)', fontSize: 14 }}>
               Est. 1998 · Broadmeadows, VIC
             </div>
           </div>
 
           {/* Text */}
           <div>
-            <div style={{ color: '#CC3A20', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>
+            <div style={{ color: 'var(--color-accent)', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>
               OUR STORY
             </div>
             <h2
               style={{
                 fontWeight: 900,
                 fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)',
-                color: '#2A0D04',
+                color: 'var(--color-ink)',
                 margin: '0 0 20px',
               }}
             >
               A Family Tradition Since 1998
             </h2>
-            <p style={{ fontSize: 15, color: '#5A3020', lineHeight: 1.75, marginBottom: 16 }}>
+            <p style={{ fontSize: 15, color: 'var(--color-body)', lineHeight: 1.75, marginBottom: 16 }}>
               Salam Small Goods started as a small corner shop in Broadmeadows, driven by a
               passion for quality meat and traditional butchery. Over the decades, our family
               has built relationships with trusted local farmers and suppliers to bring you the
               freshest, most flavourful meats.
             </p>
-            <p style={{ fontSize: 15, color: '#5A3020', lineHeight: 1.75, marginBottom: 32 }}>
+            <p style={{ fontSize: 15, color: 'var(--color-body)', lineHeight: 1.75, marginBottom: 32 }}>
               Every sausage, salami and jerky we make follows recipes handed down through
               generations — because great flavour doesn&apos;t come from shortcuts.
             </p>
@@ -57,10 +57,10 @@ export default function AboutSnippet() {
                 { value: '500+', label: 'Happy Regulars' },
               ].map((stat) => (
                 <div key={stat.label}>
-                  <div style={{ fontWeight: 900, fontSize: 28, color: '#CC3A20' }}>
+                  <div style={{ fontWeight: 900, fontSize: 28, color: 'var(--color-accent)' }}>
                     {stat.value}
                   </div>
-                  <div style={{ fontSize: 12, color: '#7A5040', fontWeight: 600 }}>
+                  <div style={{ fontSize: 12, color: 'var(--color-muted)', fontWeight: 600 }}>
                     {stat.label}
                   </div>
                 </div>

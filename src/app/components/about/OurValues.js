@@ -4,24 +4,24 @@ const values = [
     title: 'Halal Certified',
     description:
       'Every product we sell carries full halal certification from trusted Australian certification bodies. We maintain complete supply-chain traceability so you can buy with absolute confidence — from farm to counter.',
-    bg: 'linear-gradient(145deg, #E8C8D8, #D8A8C0)',
-    shadow: '#B87898',
+    bg: 'linear-gradient(145deg, #F0D4B8, #E8C098)',
+    shadow: '#C09060',
   },
   {
     emoji: '👨‍👩‍👧',
     title: 'Family Owned',
     description:
       "Three generations of the same family have run this shop. That means every decision we make is personal. We're not a corporation chasing margins — we're your neighbours who care deeply about the quality of what we put in front of you.",
-    bg: 'linear-gradient(145deg, #E8D898, #D8C070)',
-    shadow: '#B89840',
+    bg: 'linear-gradient(145deg, #EED4A0, #E0C080)',
+    shadow: '#B89040',
   },
   {
     emoji: '🌿',
     title: 'Fresh Daily',
     description:
       "We butcher and prepare every morning before the doors open. No frozen product, no days-old cuts. If it's not fresh, it doesn't go in the display case. That's a standard we set for ourselves on day one and have never compromised.",
-    bg: 'linear-gradient(145deg, #C8DFC8, #A8CCA8)',
-    shadow: '#78A878',
+    bg: 'linear-gradient(145deg, #D4DDB0, #C4CD90)',
+    shadow: '#8A9C50',
   },
 ];
 
@@ -35,14 +35,14 @@ export default function OurValues() {
     >
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <div style={{ color: '#CC3A20', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>
+          <div style={{ color: 'var(--color-accent)', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>
             WHAT WE STAND FOR
           </div>
           <h2
             style={{
               fontWeight: 900,
               fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)',
-              color: '#2A0D04',
+              color: 'var(--color-ink)',
               margin: 0,
             }}
           >
@@ -72,13 +72,13 @@ export default function OurValues() {
                 style={{
                   fontWeight: 800,
                   fontSize: 20,
-                  color: '#2A0D04',
+                  color: 'var(--color-ink)',
                   marginBottom: 14,
                 }}
               >
                 {v.title}
               </div>
-              <p style={{ fontSize: 14, color: '#5A3020', lineHeight: 1.75, margin: 0 }}>
+              <p style={{ fontSize: 14, color: 'var(--color-body)', lineHeight: 1.75, margin: 0 }}>
                 {v.description}
               </p>
             </div>
