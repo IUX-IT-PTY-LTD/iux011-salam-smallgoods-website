@@ -159,7 +159,7 @@ export const products = [
     details:
       'Boneless, skinless chicken thigh fillets from free-range halal chickens. Thighs are more forgiving than breast — they stay moist and juicy even when cooked on high heat. Perfect for BBQ skewers, curries, stir-fries, and slow cooker dishes. We recommend marinating overnight for best results. Available in 500 g or 1 kg portions.',
     emoji: '🍗',
-    inStock: true,
+    inStock: false,
     featured: false,
   },
   {

@@ -104,21 +104,38 @@ export default async function ProductPage({ params }) {
 
               {/* Title block */}
               <div>
-                <span
-                  style={{
-                    display: 'inline-block',
-                    padding: '4px 14px',
-                    borderRadius: 50,
-                    fontSize: 12,
-                    fontWeight: 700,
-                    background: 'rgba(255,255,255,0.2)',
-                    color: '#fff',
-                    marginBottom: 14,
-                    letterSpacing: '0.05em',
-                  }}
-                >
-                  {product.category}
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      padding: '4px 14px',
+                      borderRadius: 50,
+                      fontSize: 12,
+                      fontWeight: 700,
+                      background: 'rgba(255,255,255,0.2)',
+                      color: '#fff',
+                      letterSpacing: '0.05em',
+                    }}
+                  >
+                    {product.category}
+                  </span>
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      padding: '4px 14px',
+                      borderRadius: 50,
+                      fontSize: 12,
+                      fontWeight: 700,
+                      background: product.inStock
+                        ? 'linear-gradient(145deg, #4CAF50, #388E3C)'
+                        : 'linear-gradient(145deg, #E53935, #B71C1C)',
+                      color: '#fff',
+                      boxShadow: product.inStock ? '0 2px 8px rgba(56,142,60,0.4)' : '0 2px 8px rgba(183,28,28,0.4)',
+                    }}
+                  >
+                    {product.inStock ? '● In Stock' : '● Out of Stock'}
+                  </span>
+                </div>
                 <h1
                   style={{
                     fontWeight: 900,
@@ -157,47 +174,129 @@ export default async function ProductPage({ params }) {
                 alignItems: 'start',
               }}
             >
-              {/* Left: full description */}
-              <div
-                className="clay-card"
-                style={{ padding: '40px 36px' }}
-              >
-                <div
-                  style={{
-                    color: '#CC3A20',
-                    fontWeight: 700,
-                    fontSize: 13,
-                    letterSpacing: '0.08em',
-                    marginBottom: 12,
-                  }}
-                >
-                  ABOUT THIS PRODUCT
+              {/* Left: about + contact stacked */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+                {/* About card */}
+                <div className="clay-card" style={{ padding: '40px 36px' }}>
+                  <div
+                    style={{
+                      color: '#CC3A20',
+                      fontWeight: 700,
+                      fontSize: 13,
+                      letterSpacing: '0.08em',
+                      marginBottom: 12,
+                    }}
+                  >
+                    ABOUT THIS PRODUCT
+                  </div>
+                  <h2
+                    style={{
+                      fontWeight: 900,
+                      fontSize: 'clamp(1.3rem, 2vw, 1.7rem)',
+                      color: '#2A0D04',
+                      margin: '0 0 20px',
+                    }}
+                  >
+                    {product.name}
+                  </h2>
+                  <p
+                    style={{
+                      fontSize: 15,
+                      color: '#5A3020',
+                      lineHeight: 1.85,
+                      margin: 0,
+                    }}
+                  >
+                    {product.details}
+                  </p>
                 </div>
-                <h2
+
+                {/* Contact Us card */}
+                <div
+                  className="clay-card-strong"
                   style={{
-                    fontWeight: 900,
-                    fontSize: 'clamp(1.3rem, 2vw, 1.7rem)',
-                    color: '#2A0D04',
-                    margin: '0 0 20px',
+                    padding: '32px 36px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 28,
+                    flexWrap: 'wrap',
                   }}
                 >
-                  {product.name}
-                </h2>
-                <p
-                  style={{
-                    fontSize: 15,
-                    color: '#5A3020',
-                    lineHeight: 1.85,
-                    margin: 0,
-                  }}
-                >
-                  {product.details}
-                </p>
+                  <div style={{ fontSize: 40 }}>📞</div>
+                  <div style={{ flex: 1, minWidth: 200 }}>
+                    <div
+                      style={{
+                        fontWeight: 800,
+                        fontSize: 16,
+                        color: '#2A0D04',
+                        marginBottom: 6,
+                      }}
+                    >
+                      Interested in this product?
+                    </div>
+                    <div style={{ fontSize: 13, color: '#7A5040', lineHeight: 1.5 }}>
+                      Visit us in-store or get in touch to place an order or ask a question.
+                    </div>
+                  </div>
+                  <Link
+                    href="/contact"
+                    className="clay-btn-primary"
+                    style={{ fontSize: 14, padding: '12px 24px', whiteSpace: 'nowrap' }}
+                  >
+                    Contact Us →
+                  </Link>
+                </div>
               </div>
 
-              {/* Right: CTA card */}
+              {/* Right: stock status + halal cert */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                {/* Halal badge card */}
+                {/* Stock status card */}
+                <div
+                  className="clay-card"
+                  style={{ padding: '22px 24px', display: 'flex', alignItems: 'center', gap: 16 }}
+                >
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 14,
+                      flexShrink: 0,
+                      background: product.inStock
+                        ? 'linear-gradient(145deg, #4CAF50, #388E3C)'
+                        : 'linear-gradient(145deg, #E53935, #B71C1C)',
+                      boxShadow: product.inStock
+                        ? '3px 3px 0px #2E7D32'
+                        : '3px 3px 0px #7F0000',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 22,
+                      color: '#fff',
+                      fontWeight: 900,
+                    }}
+                  >
+                    {product.inStock ? '✓' : '✕'}
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontWeight: 800,
+                        fontSize: 15,
+                        color: '#2A0D04',
+                        marginBottom: 3,
+                      }}
+                    >
+                      {product.inStock ? 'In Stock' : 'Out of Stock'}
+                    </div>
+                    <div style={{ fontSize: 12, color: '#7A5040', lineHeight: 1.4 }}>
+                      {product.inStock
+                        ? 'Available now — visit us in-store.'
+                        : 'Currently unavailable. Contact us for updates.'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Halal cert card */}
                 <div
                   className="clay-card"
                   style={{ padding: '28px 24px', textAlign: 'center' }}
@@ -216,59 +315,6 @@ export default async function ProductPage({ params }) {
                   <div style={{ fontSize: 13, color: '#7A5040', lineHeight: 1.5 }}>
                     All products carry full halal certification from trusted Australian bodies.
                   </div>
-                </div>
-
-                {/* Enquire CTA */}
-                <div
-                  className="clay-card-strong"
-                  style={{ padding: '32px 28px', textAlign: 'center' }}
-                >
-                  <div style={{ fontSize: 32, marginBottom: 12 }}>📞</div>
-                  <div
-                    style={{
-                      fontWeight: 800,
-                      fontSize: 16,
-                      color: '#2A0D04',
-                      marginBottom: 8,
-                    }}
-                  >
-                    Interested in this product?
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      color: '#7A5040',
-                      lineHeight: 1.5,
-                      marginBottom: 20,
-                    }}
-                  >
-                    Visit us in-store or get in touch to place an order or ask a question.
-                  </div>
-                  <Link
-                    href="/contact"
-                    className="clay-btn-primary"
-                    style={{
-                      display: 'block',
-                      textAlign: 'center',
-                      fontSize: 14,
-                      padding: '12px 20px',
-                    }}
-                  >
-                    Contact Us →
-                  </Link>
-                  <Link
-                    href={`/products/${categorySlug}`}
-                    style={{
-                      display: 'block',
-                      textAlign: 'center',
-                      fontSize: 13,
-                      color: '#7A5040',
-                      marginTop: 14,
-                      textDecoration: 'none',
-                    }}
-                  >
-                    ← Back to {category?.label}
-                  </Link>
                 </div>
               </div>
             </div>
