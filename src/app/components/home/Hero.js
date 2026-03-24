@@ -114,7 +114,7 @@ export default function Hero() {
             aspectRatio: '1',
           }}
         >
-          {featured.map((product, i) => (
+          {featured.map((product) => (
             <Link
               key={product.id}
               href={`/products/${product.categorySlug}/${product.slug}`}
