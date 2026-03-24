@@ -9,11 +9,11 @@
   --color-surface:            #E8D0A8;  /* page background */
 
   /* Card surfaces */
-  --color-surface-raised:     #EDD5B0;  /* card bg light stop */
-  --color-surface-mid:        #E0C090;  /* card bg dark stop */
-  --color-surface-strong:     #E8CCA8;  /* elevated card light stop */
-  --color-surface-strong-mid: #DCBC88;  /* elevated card dark stop */
-  --color-surface-hi:         #F5E0C0;  /* inset highlight */
+  --color-surface-raised:     #FBF0DC;  /* card bg light stop */
+  --color-surface-mid:        #F5E4C4;  /* card bg dark stop */
+  --color-surface-strong:     #F8EDD4;  /* elevated card light stop */
+  --color-surface-strong-mid: #F0E0BC;  /* elevated card dark stop */
+  --color-surface-hi:         #FFFAF2;  /* inset highlight */
 
   /* Clay shadows */
   --color-shadow:             #B8784A;  /* standard clay shadow */
