@@ -41,8 +41,8 @@ export const products = [
     description: 'Juicy, seasoned beef sausages made from premium cuts. Perfect for the BBQ or pan-fry.',
     details:
       'Our beef sausages are crafted from hand-selected premium beef cuts, seasoned with a blend of traditional herbs and spices. Each sausage is packed with natural flavour and has a satisfying snap on the grill. Perfect for a weekend BBQ, a quick pan-fry, or sliced into pasta dishes. Sold by the kilogram — minimum 1 kg per order.',
-    price: '$12.99 / kg',
     emoji: '🌭',
+    inStock: true,
     featured: true,
   },
   {
@@ -54,8 +54,8 @@ export const products = [
     description: 'Tender lamb chops from free-range lambs. Rich flavour, perfect for grilling.',
     details:
       'Sourced from free-range Australian lambs, our lamb chops are cut thick for maximum juiciness on the grill. The natural marbling delivers rich, complex flavour that needs nothing more than a pinch of salt and a hot grill. Available as loin chops or forequarter chops — just let us know your preference when ordering.',
-    price: '$22.99 / kg',
     emoji: '🍖',
+    inStock: true,
     featured: true,
   },
   {
@@ -67,8 +67,8 @@ export const products = [
     description: 'Fresh chicken wings, great for marinating or frying. Buy in bulk and save.',
     details:
       'Our fresh halal chicken wings are perfect for marinating overnight and throwing on the grill, or coating in seasoned flour for a crispy deep-fry. We split them into flats and drumettes on request. Great for entertaining — buy 3 kg or more and save on the per-kg price. Ask about our signature marinade.',
-    price: '$8.99 / kg',
     emoji: '🍗',
+    inStock: true,
     featured: true,
   },
   {
@@ -80,8 +80,8 @@ export const products = [
     description: 'House-made beef jerky with a smoky, sweet marinade. A fan favourite snack.',
     details:
       'Our signature house-made beef jerky is slow-smoked using a sweet and smoky marinade developed over many years. Made from lean beef silverside, each batch is marinated for 24 hours before being low-and-slow smoked to perfection. Chewy, flavourful, and completely addictive. A fan favourite — we often sell out by midday Saturday.',
-    price: '$34.99 / kg',
     emoji: '🥩',
+    inStock: false,
     featured: true,
   },
   {
@@ -93,8 +93,8 @@ export const products = [
     description: 'Freshly minced lamb shoulder. Perfect for kebabs, burgers, or meatballs.',
     details:
       'Freshly minced from lamb shoulder every morning, our lamb mince has the ideal fat-to-lean ratio for juicy kebabs, kofta, burgers, and meatballs. We never use filler or preservatives — just 100% fresh halal lamb. Available in standard or coarse grind. Comes in 500 g or 1 kg portions.',
-    price: '$14.99 / kg',
     emoji: '🫙',
+    inStock: true,
     featured: false,
   },
   {
@@ -106,8 +106,8 @@ export const products = [
     description: 'Lean chicken breast fillets, skinless and boneless. Ready to cook.',
     details:
       'Skinless, boneless chicken breast fillets from free-range halal chickens. Trimmed and ready to cook — perfect for grilling, pan-frying, stir-frying, or slicing into salads. Lean, versatile, and consistently tender. We also offer them butterflied or sliced into strips for stir-fry on request at no extra charge.',
-    price: '$13.99 / kg',
     emoji: '🍗',
+    inStock: true,
     featured: false,
   },
   {
@@ -119,8 +119,8 @@ export const products = [
     description: 'Traditional-style beef salami, sliced thin. A deli classic.',
     details:
       'Made in-house using a traditional recipe, our beef salami is seasoned with garlic, black pepper, and a blend of spices before being air-dried to develop deep, rich flavour. Sliced thin to order on our deli slicer. Excellent on a cheese board, in a sandwich, or on a pizza. Available by the 100 g or as a whole log.',
-    price: '$29.99 / kg',
     emoji: '🥩',
+    inStock: true,
     featured: false,
   },
   {
@@ -132,8 +132,8 @@ export const products = [
     description: 'Premium quality beef mince, ideal for bolognese, burgers, and more.',
     details:
       'Freshly ground every morning from premium beef chuck and brisket, our beef mince strikes the perfect balance of lean and fat for rich, flavourful results. Available in regular (80/20) and lean (90/10) blends. No additives, no preservatives — just fresh halal beef. Comes in 500 g or 1 kg portions.',
-    price: '$11.99 / kg',
     emoji: '🥩',
+    inStock: true,
     featured: false,
   },
   {
@@ -145,8 +145,8 @@ export const products = [
     description: 'Slow-cook lamb shanks that fall off the bone. A winter warmer favourite.',
     details:
       'Our lamb shanks are cut from the lower leg and are perfect for long, slow braises. After a few hours in the oven with aromatics, the meat becomes meltingly tender and falls off the bone. Sold as individual shanks — typically 400–500 g each. A true winter comfort classic and a consistent bestseller from May to August.',
-    price: '$18.99 / kg',
     emoji: '🍖',
+    inStock: false,
     featured: false,
   },
   {
@@ -158,8 +158,8 @@ export const products = [
     description: 'Juicy boneless chicken thigh fillets. More flavour than breast.',
     details:
       'Boneless, skinless chicken thigh fillets from free-range halal chickens. Thighs are more forgiving than breast — they stay moist and juicy even when cooked on high heat. Perfect for BBQ skewers, curries, stir-fries, and slow cooker dishes. We recommend marinating overnight for best results. Available in 500 g or 1 kg portions.',
-    price: '$10.99 / kg',
     emoji: '🍗',
+    inStock: true,
     featured: false,
   },
   {
@@ -171,8 +171,8 @@ export const products = [
     description: 'Seasoned and smoked beef pastrami. Perfect for sandwiches.',
     details:
       'Our house-made beef pastrami starts with a premium beef brisket brined for five days in a spiced curing mix, then coated in cracked black pepper and coriander before being hot-smoked low and slow. The result is a tender, deeply flavoured deli meat that elevates any sandwich or charcuterie board. Sliced to order.',
-    price: '$27.99 / kg',
     emoji: '🥩',
+    inStock: true,
     featured: false,
   },
   {
@@ -184,8 +184,8 @@ export const products = [
     description: 'Herbed lamb sausages, great on the BBQ or with roasted veg.',
     details:
       'Our lamb sausages are made in-house from freshly minced lamb shoulder, seasoned with rosemary, garlic, cumin, and a touch of chilli. They have a coarser texture than our beef sausages, giving them a rustic, homemade character. Brilliant on the BBQ, roasted alongside vegetables, or sliced into a hearty stew.',
-    price: '$14.99 / kg',
     emoji: '🌭',
+    inStock: true,
     featured: false,
   },
 ];

@@ -218,7 +218,7 @@ export default function Navbar() {
         placement="right"
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
-        width={260}
+        size="default"
         styles={{ body: { background: '#E8D0A8', padding: 24 } }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>

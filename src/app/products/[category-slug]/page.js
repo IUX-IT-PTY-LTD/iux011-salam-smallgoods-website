@@ -9,8 +9,9 @@ export function generateStaticParams() {
   return categories.map((cat) => ({ 'category-slug': cat.slug }));
 }
 
-export function generateMetadata({ params }) {
-  const category = getCategoryBySlug(params['category-slug']);
+export async function generateMetadata({ params }) {
+  const { 'category-slug': categorySlug } = await params;
+  const category = getCategoryBySlug(categorySlug);
   if (!category) return {};
   return {
     title: `${category.label} – Salam Small Goods`,
@@ -18,11 +19,12 @@ export function generateMetadata({ params }) {
   };
 }
 
-export default function CategoryPage({ params }) {
-  const category = getCategoryBySlug(params['category-slug']);
+export default async function CategoryPage({ params }) {
+  const { 'category-slug': categorySlug } = await params;
+  const category = getCategoryBySlug(categorySlug);
   if (!category) notFound();
 
-  const categoryProducts = getProductsByCategory(params['category-slug']);
+  const categoryProducts = getProductsByCategory(categorySlug);
 
   return (
     <>
