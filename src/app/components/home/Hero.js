@@ -10,7 +10,7 @@ export default function Hero() {
   return (
     <section
       style={{
-        background: 'linear-gradient(135deg, #fff3e0 0%, #ffe0cc 50%, #ffd0b5 100%)',
+        background: 'linear-gradient(135deg, #DFB878 0%, #D0A060 50%, #C49050 100%)',
         padding: '80px 24px',
       }}
     >
@@ -20,7 +20,7 @@ export default function Hero() {
           {/* Badges */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 28 }}>
             {badges.map((b) => (
-              <span key={b.label} className="clay-badge" style={{ color: '#3d1a0e' }}>
+              <span key={b.label} className="clay-badge" style={{ color: '#2A0D04' }}>
                 {b.emoji} {b.label}
               </span>
             ))}
@@ -30,19 +30,19 @@ export default function Hero() {
             style={{
               fontSize: 'clamp(2rem, 4vw, 3.2rem)',
               fontWeight: 900,
-              color: '#3d1a0e',
+              color: '#2A0D04',
               lineHeight: 1.15,
               margin: '0 0 20px',
             }}
           >
             Premium Quality{' '}
-            <span style={{ color: '#ff6b6b' }}>Meats &amp; Smallgoods</span>
+            <span style={{ color: '#CC3A20' }}>Meats &amp; Smallgoods</span>
           </h1>
 
           <p
             style={{
               fontSize: 18,
-              color: '#8b6f6f',
+              color: '#5A3020',
               lineHeight: 1.7,
               margin: '0 0 36px',
               maxWidth: 480,
@@ -82,7 +82,7 @@ export default function Hero() {
               style={{
                 fontWeight: 800,
                 fontSize: 22,
-                color: '#3d1a0e',
+                color: '#2A0D04',
                 textAlign: 'center',
               }}
             >

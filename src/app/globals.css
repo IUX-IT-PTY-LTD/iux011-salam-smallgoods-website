@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafaf5;
-  --foreground: #3d1a0e;
+  --background: #E8D0A8;
+  --foreground: #2A0D04;
 }
 
 @theme inline {
@@ -22,20 +22,20 @@ body {
 
 .clay-card {
   border-radius: 24px;
-  background: linear-gradient(145deg, #fff8f0, #ffeedd);
+  background: linear-gradient(145deg, #EDD5B0, #E0C090);
   box-shadow:
-    8px 8px 0px #e0b99a,
-    inset 2px 2px 8px #ffffff,
-    inset -1px -1px 4px #e8c5a0;
+    8px 8px 0px #B8784A,
+    inset 2px 2px 8px #F5E0C0,
+    inset -1px -1px 4px #D4A870;
 }
 
 .clay-card-strong {
   border-radius: 28px;
-  background: linear-gradient(145deg, #fff3e8, #ffe6cc);
+  background: linear-gradient(145deg, #E8CCA8, #DCBC88);
   box-shadow:
-    10px 10px 0px #d4a07a,
-    inset 3px 3px 10px #ffffff,
-    inset -2px -2px 6px #e8c5a0;
+    10px 10px 0px #A06838,
+    inset 3px 3px 10px #F5E0C0,
+    inset -2px -2px 6px #D4A870;
 }
 
 .clay-btn-primary {
@@ -46,10 +46,10 @@ body {
   border-radius: 50px;
   font-weight: 700;
   color: #ffffff;
-  background: linear-gradient(145deg, #ff8080, #ff5555);
+  background: linear-gradient(145deg, #CC3A20, #B02808);
   box-shadow:
-    4px 4px 0px #cc3333,
-    inset 2px 2px 6px #ff9999;
+    4px 4px 0px #7A1808,
+    inset 2px 2px 6px #E05030;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   cursor: pointer;
   border: none;
@@ -58,14 +58,14 @@ body {
 .clay-btn-primary:hover {
   transform: translateY(-2px);
   box-shadow:
-    6px 6px 0px #cc3333,
-    inset 2px 2px 6px #ff9999;
+    6px 6px 0px #7A1808,
+    inset 2px 2px 6px #E05030;
 }
 .clay-btn-primary:active {
   transform: translateY(1px);
   box-shadow:
-    2px 2px 0px #cc3333,
-    inset 2px 2px 6px #ff9999;
+    2px 2px 0px #7A1808,
+    inset 2px 2px 6px #E05030;
 }
 
 .clay-btn-secondary {
@@ -75,11 +75,11 @@ body {
   padding: 12px 28px;
   border-radius: 50px;
   font-weight: 700;
-  color: #3d1a0e;
-  background: linear-gradient(145deg, #fff8f0, #ffe8d0);
+  color: #2A0D04;
+  background: linear-gradient(145deg, #EDD5B0, #E0C090);
   box-shadow:
-    4px 4px 0px #d4a07a,
-    inset 2px 2px 6px #ffffff;
+    4px 4px 0px #B8784A,
+    inset 2px 2px 6px #F5E0C0;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   cursor: pointer;
   border: none;
@@ -88,14 +88,14 @@ body {
 .clay-btn-secondary:hover {
   transform: translateY(-2px);
   box-shadow:
-    6px 6px 0px #d4a07a,
-    inset 2px 2px 6px #ffffff;
+    6px 6px 0px #B8784A,
+    inset 2px 2px 6px #F5E0C0;
 }
 .clay-btn-secondary:active {
   transform: translateY(1px);
   box-shadow:
-    2px 2px 0px #d4a07a,
-    inset 2px 2px 6px #ffffff;
+    2px 2px 0px #B8784A,
+    inset 2px 2px 6px #F5E0C0;
 }
 
 .clay-filter-btn {
@@ -106,17 +106,17 @@ body {
   border-radius: 50px;
   font-weight: 600;
   font-size: 14px;
-  color: #8b6f6f;
-  background: linear-gradient(145deg, #fff8f0, #ffeedd);
+  color: #7A5040;
+  background: linear-gradient(145deg, #EDD5B0, #E0C090);
   box-shadow:
-    3px 3px 0px #e0b99a,
-    inset 1px 1px 4px #ffffff;
+    3px 3px 0px #B8784A,
+    inset 1px 1px 4px #F5E0C0;
   transition: transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
   cursor: pointer;
   border: none;
 }
 .clay-filter-btn:hover {
-  color: #3d1a0e;
+  color: #2A0D04;
   transform: translateY(-1px);
 }
 
@@ -129,10 +129,10 @@ body {
   font-weight: 700;
   font-size: 14px;
   color: #ffffff;
-  background: linear-gradient(145deg, #ff8080, #ff5555);
+  background: linear-gradient(145deg, #CC3A20, #B02808);
   box-shadow:
-    3px 3px 0px #cc3333,
-    inset 2px 2px 6px #ff9999;
+    3px 3px 0px #7A1808,
+    inset 2px 2px 6px #E05030;
   cursor: pointer;
   border: none;
 }
@@ -145,18 +145,18 @@ body {
   border-radius: 50px;
   font-size: 13px;
   font-weight: 700;
-  background: linear-gradient(145deg, #fff8f0, #ffeedd);
+  background: linear-gradient(145deg, #EDD5B0, #E0C090);
   box-shadow:
-    3px 3px 0px #e0b99a,
-    inset 1px 1px 4px #ffffff;
+    3px 3px 0px #B8784A,
+    inset 1px 1px 4px #F5E0C0;
 }
 
 .clay-banner {
   border-radius: 28px;
-  background: linear-gradient(135deg, #ff8c69 0%, #ff6b6b 50%, #ffa07a 100%);
+  background: linear-gradient(135deg, #CC3A20 0%, #B02808 50%, #D04A28 100%);
   box-shadow:
-    8px 8px 0px #cc5533,
-    inset 2px 2px 10px #ffaa88;
+    8px 8px 0px #7A1808,
+    inset 2px 2px 10px #E05030;
   padding: 48px 40px;
 }
 

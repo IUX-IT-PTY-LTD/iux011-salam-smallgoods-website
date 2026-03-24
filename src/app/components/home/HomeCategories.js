@@ -1,0 +1,119 @@
+'use client';
+
+import Link from 'next/link';
+import { categories, products } from '@/lib/products';
+
+export default function HomeCategories() {
+  return (
+    <section style={{ padding: '80px 24px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        {/* Heading */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            marginBottom: 40,
+            flexWrap: 'wrap',
+            gap: 16,
+          }}
+        >
+          <div>
+            <div style={{ color: '#CC3A20', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>
+              BROWSE BY CATEGORY
+            </div>
+            <h2
+              style={{
+                fontWeight: 900,
+                fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)',
+                color: '#2A0D04',
+                margin: 0,
+              }}
+            >
+              Shop by Category
+            </h2>
+          </div>
+          <Link
+            href="/products"
+            className="clay-btn-secondary"
+            style={{ fontSize: 14, padding: '10px 22px' }}
+          >
+            View All →
+          </Link>
+        </div>
+
+        {/* Category cards */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+            gap: 24,
+          }}
+        >
+          {categories.map((cat) => {
+            const count = products.filter((p) => p.categorySlug === cat.slug).length;
+            return (
+              <Link
+                key={cat.slug}
+                href={`/products/${cat.slug}`}
+                style={{ textDecoration: 'none' }}
+              >
+                <div
+                  className="clay-card"
+                  style={{
+                    padding: '28px 20px',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <div style={{ fontSize: 52, marginBottom: 12 }}>{cat.emoji}</div>
+                  <div
+                    style={{
+                      fontWeight: 800,
+                      fontSize: 16,
+                      color: '#2A0D04',
+                      marginBottom: 6,
+                    }}
+                  >
+                    {cat.label}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: '#7A5040',
+                      lineHeight: 1.4,
+                      marginBottom: 12,
+                    }}
+                  >
+                    {cat.description}
+                  </div>
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      padding: '3px 12px',
+                      borderRadius: 50,
+                      fontSize: 11,
+                      fontWeight: 700,
+                      background: 'linear-gradient(145deg, #CC3A20, #B02808)',
+                      color: '#fff',
+                      boxShadow: '2px 2px 0px #7A1808',
+                    }}
+                  >
+                    {count} items
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}

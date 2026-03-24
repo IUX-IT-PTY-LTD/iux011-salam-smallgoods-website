@@ -5,8 +5,8 @@ export default function Footer() {
   return (
     <footer
       style={{
-        background: 'linear-gradient(145deg, #3d1a0e, #5a2c1a)',
-        color: '#fff8f0',
+        background: 'linear-gradient(145deg, #1A0804, #2A1208)',
+        color: '#EDD5B0',
         padding: '48px 24px 24px',
         marginTop: 80,
       }}
@@ -25,13 +25,13 @@ export default function Footer() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
               <span style={{ fontSize: 28 }}>🥩</span>
               <div>
-                <div style={{ fontWeight: 800, fontSize: 18, color: '#fff8f0' }}>
+                <div style={{ fontWeight: 800, fontSize: 18, color: '#EDD5B0' }}>
                   {shopInfo.name}
                 </div>
-                <div style={{ fontSize: 12, color: '#ffa07a' }}>{shopInfo.tagline}</div>
+                <div style={{ fontSize: 12, color: '#CC3A20' }}>{shopInfo.tagline}</div>
               </div>
             </div>
-            <p style={{ color: '#d4b8a8', fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+            <p style={{ color: '#B89070', fontSize: 14, lineHeight: 1.6, margin: 0 }}>
               {shopInfo.description}
             </p>
           </div>
@@ -39,7 +39,7 @@ export default function Footer() {
           {/* Quick links */}
           <div>
             <div
-              style={{ fontWeight: 700, fontSize: 15, color: '#ffa07a', marginBottom: 16 }}
+              style={{ fontWeight: 700, fontSize: 15, color: '#CC3A20', marginBottom: 16 }}
             >
               Quick Links
             </div>
@@ -47,13 +47,14 @@ export default function Footer() {
               {[
                 { label: 'Home', href: '/' },
                 { label: 'Products', href: '/products' },
+                { label: 'About Us', href: '/about' },
                 { label: 'Contact Us', href: '/contact' },
               ].map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   style={{
-                    color: '#d4b8a8',
+                    color: '#B89070',
                     textDecoration: 'none',
                     fontSize: 14,
                     transition: 'color 0.15s',
@@ -68,28 +69,28 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <div
-              style={{ fontWeight: 700, fontSize: 15, color: '#ffa07a', marginBottom: 16 }}
+              style={{ fontWeight: 700, fontSize: 15, color: '#CC3A20', marginBottom: 16 }}
             >
               Contact
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div style={{ color: '#d4b8a8', fontSize: 14 }}>📍 {shopInfo.address}</div>
-              <div style={{ color: '#d4b8a8', fontSize: 14 }}>📞 {shopInfo.phone}</div>
-              <div style={{ color: '#d4b8a8', fontSize: 14 }}>✉️ {shopInfo.email}</div>
+              <div style={{ color: '#B89070', fontSize: 14 }}>📍 {shopInfo.address}</div>
+              <div style={{ color: '#B89070', fontSize: 14 }}>📞 {shopInfo.phone}</div>
+              <div style={{ color: '#B89070', fontSize: 14 }}>✉️ {shopInfo.email}</div>
             </div>
           </div>
 
           {/* Hours */}
           <div>
             <div
-              style={{ fontWeight: 700, fontSize: 15, color: '#ffa07a', marginBottom: 16 }}
+              style={{ fontWeight: 700, fontSize: 15, color: '#CC3A20', marginBottom: 16 }}
             >
               Trading Hours
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {shopInfo.hours.map((h) => (
-                <div key={h.day} style={{ fontSize: 13, color: '#d4b8a8' }}>
-                  <span style={{ fontWeight: 600, color: '#fff8f0' }}>{h.day}</span>
+                <div key={h.day} style={{ fontSize: 13, color: '#B89070' }}>
+                  <span style={{ fontWeight: 600, color: '#EDD5B0' }}>{h.day}</span>
                   <br />
                   {h.time}
                 </div>
@@ -101,7 +102,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div
           style={{
-            borderTop: '1px solid #5a2c1a',
+            borderTop: '1px solid #3A1A08',
             paddingTop: 20,
             display: 'flex',
             justifyContent: 'space-between',
@@ -110,7 +111,7 @@ export default function Footer() {
             gap: 12,
           }}
         >
-          <div style={{ color: '#8b6f6f', fontSize: 13 }}>
+          <div style={{ color: '#7A5040', fontSize: 13 }}>
             © {new Date().getFullYear()} {shopInfo.name}. All rights reserved.
           </div>
           <div style={{ display: 'flex', gap: 16 }}>

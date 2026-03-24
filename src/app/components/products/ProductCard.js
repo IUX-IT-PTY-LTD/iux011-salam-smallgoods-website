@@ -17,7 +17,7 @@ export default function ProductCard({ product }) {
           fontSize: 60,
           textAlign: 'center',
           marginBottom: 16,
-          background: 'linear-gradient(145deg, #fff3e8, #ffeedd)',
+          background: 'linear-gradient(145deg, #E8CCA8, #DCBC88)',
           borderRadius: 16,
           padding: '18px 0',
         }}
@@ -34,10 +34,10 @@ export default function ProductCard({ product }) {
           borderRadius: 50,
           fontSize: 11,
           fontWeight: 700,
-          background: '#fff3e0',
-          color: '#ff6b6b',
+          background: 'linear-gradient(145deg, #EDD5B0, #E0C090)',
+          color: '#CC3A20',
           marginBottom: 10,
-          boxShadow: '2px 2px 0px #e0b99a',
+          boxShadow: '2px 2px 0px #B8784A',
         }}
       >
         {product.category}
@@ -48,7 +48,7 @@ export default function ProductCard({ product }) {
         style={{
           fontWeight: 800,
           fontSize: 17,
-          color: '#3d1a0e',
+          color: '#2A0D04',
           marginBottom: 8,
         }}
       >
@@ -59,7 +59,7 @@ export default function ProductCard({ product }) {
       <p
         style={{
           fontSize: 13,
-          color: '#8b6f6f',
+          color: '#7A5040',
           lineHeight: 1.55,
           margin: '0 0 20px',
           flex: 1,
@@ -68,31 +68,24 @@ export default function ProductCard({ product }) {
         {product.description}
       </p>
 
-      {/* Price + CTA */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginTop: 'auto',
-        }}
-      >
-        <span style={{ fontWeight: 800, fontSize: 17, color: '#ff6b6b' }}>
-          {product.price}
-        </span>
+      {/* Price */}
+      <div style={{ fontWeight: 800, fontSize: 17, color: '#CC3A20', marginBottom: 14 }}>
+        {product.price}
+      </div>
+
+      {/* CTAs */}
+      <div style={{ display: 'flex', gap: 8 }}>
+        <Link
+          href={`/products/${product.categorySlug}/${product.slug}`}
+          className="clay-btn-primary"
+          style={{ fontSize: 13, padding: '8px 16px', flex: 1, justifyContent: 'center' }}
+        >
+          Read More
+        </Link>
         <Link
           href="/contact"
-          style={{
-            padding: '8px 18px',
-            borderRadius: 50,
-            background: 'linear-gradient(145deg, #ff8080, #ff5555)',
-            color: '#fff',
-            fontWeight: 700,
-            fontSize: 13,
-            textDecoration: 'none',
-            boxShadow: '3px 3px 0px #cc3333, inset 1px 1px 4px #ff9999',
-            transition: 'transform 0.15s ease',
-          }}
+          className="clay-btn-secondary"
+          style={{ fontSize: 13, padding: '8px 16px', flex: 1, justifyContent: 'center' }}
         >
           Enquire
         </Link>
