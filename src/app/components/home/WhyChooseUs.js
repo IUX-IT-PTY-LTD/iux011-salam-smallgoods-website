@@ -4,24 +4,24 @@ const features = [
     title: 'Halal Certified',
     description:
       'All our meats are certified halal, sourced from trusted suppliers with full traceability.',
-    bg: 'linear-gradient(145deg, #fff0f5, #ffd6e8)',
-    shadow: '#e0a0c0',
+    bg: 'linear-gradient(145deg, #F0D4B8, #E8C098)',
+    shadow: '#C09060',
   },
   {
     emoji: '🌿',
     title: 'Fresh Daily Cuts',
     description:
       'We butcher fresh every morning so you always get the best quality, never frozen.',
-    bg: 'linear-gradient(145deg, #f0fff4, #d0f5dd)',
-    shadow: '#a0d5b0',
+    bg: 'linear-gradient(145deg, #D4DDB0, #C4CD90)',
+    shadow: '#8A9C50',
   },
   {
     emoji: '👨‍👩‍👧',
     title: 'Family Recipe',
     description:
       'Our smallgoods and sausages are made using traditional family recipes passed down for generations.',
-    bg: 'linear-gradient(145deg, #fff8e8, #ffeebf)',
-    shadow: '#e0c87a',
+    bg: 'linear-gradient(145deg, #EED4A0, #E0C080)',
+    shadow: '#B89040',
   },
 ];
 
@@ -29,16 +29,25 @@ export default function WhyChooseUs() {
   return (
     <section
       style={{
-        background: 'linear-gradient(135deg, #fff3e0 0%, #fafaf5 100%)',
+        background: 'linear-gradient(135deg, #DFB878 0%, #E8D0A8 100%)',
         padding: '80px 24px',
       }}
     >
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <div style={{ color: '#ff6b6b', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>
+          <div style={{ color: 'var(--color-accent)', fontWeight: 700, fontSize: 14, marginBottom: 6 }}>
             WHY US
           </div>
-          <h2 className="clay-section-title">Why Choose Salam Small Goods?</h2>
+          <h2
+            style={{
+              fontWeight: 900,
+              fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)',
+              color: 'var(--color-ink)',
+              margin: 0,
+            }}
+          >
+            Why Choose Salam Small Goods?
+          </h2>
         </div>
 
         <div
@@ -54,7 +63,7 @@ export default function WhyChooseUs() {
               style={{
                 borderRadius: 24,
                 background: f.bg,
-                boxShadow: `8px 8px 0px ${f.shadow}, inset 2px 2px 8px #ffffff`,
+                boxShadow: `8px 8px 0px ${f.shadow}, inset 2px 2px 8px rgba(255,255,255,0.4)`,
                 padding: '36px 32px',
                 textAlign: 'center',
               }}
@@ -64,13 +73,13 @@ export default function WhyChooseUs() {
                 style={{
                   fontWeight: 800,
                   fontSize: 19,
-                  color: '#3d1a0e',
+                  color: 'var(--color-ink)',
                   marginBottom: 12,
                 }}
               >
                 {f.title}
               </div>
-              <p style={{ fontSize: 14, color: '#8b6f6f', lineHeight: 1.65, margin: 0 }}>
+              <p style={{ fontSize: 14, color: 'var(--color-body)', lineHeight: 1.65, margin: 0 }}>
                 {f.description}
               </p>
             </div>

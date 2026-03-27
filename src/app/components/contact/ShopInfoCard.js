@@ -7,10 +7,10 @@ export default function ShopInfoCard() {
         style={{
           fontWeight: 800,
           fontSize: 20,
-          color: '#3d1a0e',
+          color: '#2A0D04',
           marginBottom: 24,
           paddingBottom: 16,
-          borderBottom: '2px solid #ffeedd',
+          borderBottom: '2px solid #D4A870',
         }}
       >
         📍 Find Us
@@ -19,22 +19,22 @@ export default function ShopInfoCard() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {/* Address */}
         <div>
-          <div style={{ fontWeight: 700, fontSize: 13, color: '#ff6b6b', marginBottom: 4 }}>
+          <div style={{ fontWeight: 700, fontSize: 13, color: '#CC3A20', marginBottom: 4 }}>
             ADDRESS
           </div>
-          <div style={{ fontSize: 15, color: '#3d1a0e', fontWeight: 500 }}>
+          <div style={{ fontSize: 15, color: '#2A0D04', fontWeight: 500 }}>
             {shopInfo.address}
           </div>
         </div>
 
         {/* Phone */}
         <div>
-          <div style={{ fontWeight: 700, fontSize: 13, color: '#ff6b6b', marginBottom: 4 }}>
+          <div style={{ fontWeight: 700, fontSize: 13, color: '#CC3A20', marginBottom: 4 }}>
             PHONE
           </div>
           <a
             href={`tel:${shopInfo.phone}`}
-            style={{ fontSize: 15, color: '#3d1a0e', fontWeight: 500, textDecoration: 'none' }}
+            style={{ fontSize: 15, color: '#2A0D04', fontWeight: 500, textDecoration: 'none' }}
           >
             {shopInfo.phone}
           </a>
@@ -42,20 +42,20 @@ export default function ShopInfoCard() {
 
         {/* Email */}
         <div>
-          <div style={{ fontWeight: 700, fontSize: 13, color: '#ff6b6b', marginBottom: 4 }}>
+          <div style={{ fontWeight: 700, fontSize: 13, color: '#CC3A20', marginBottom: 4 }}>
             EMAIL
           </div>
           <a
             href={`mailto:${shopInfo.email}`}
-            style={{ fontSize: 15, color: '#3d1a0e', fontWeight: 500, textDecoration: 'none' }}
+            style={{ fontSize: 15, color: '#2A0D04', fontWeight: 500, textDecoration: 'none' }}
           >
             {shopInfo.email}
           </a>
         </div>
 
         {/* Divider */}
-        <div style={{ borderTop: '2px solid #ffeedd', paddingTop: 20 }}>
-          <div style={{ fontWeight: 800, fontSize: 15, color: '#3d1a0e', marginBottom: 16 }}>
+        <div style={{ borderTop: '2px solid #D4A870', paddingTop: 20 }}>
+          <div style={{ fontWeight: 800, fontSize: 15, color: '#2A0D04', marginBottom: 16 }}>
             🕐 Trading Hours
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -68,14 +68,33 @@ export default function ShopInfoCard() {
                   fontSize: 14,
                   padding: '8px 12px',
                   borderRadius: 10,
-                  background: 'linear-gradient(145deg, #fff8f0, #ffeedd)',
-                  boxShadow: '2px 2px 0px #e0b99a',
+                  background: 'linear-gradient(145deg, #EDD5B0, #E0C090)',
+                  boxShadow: '2px 2px 0px #B8784A',
                 }}
               >
-                <span style={{ fontWeight: 600, color: '#3d1a0e' }}>{h.day}</span>
-                <span style={{ color: '#8b6f6f' }}>{h.time}</span>
+                <span style={{ fontWeight: 600, color: '#2A0D04' }}>{h.day}</span>
+                <span style={{ color: '#7A5040' }}>{h.time}</span>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Map */}
+        <div style={{ borderTop: '2px solid #D4A870', paddingTop: 20 }}>
+          <div style={{ fontWeight: 800, fontSize: 15, color: '#2A0D04', marginBottom: 16 }}>
+            🗺️ Our Location
+          </div>
+          <div style={{ borderRadius: 16, overflow: 'hidden', boxShadow: '4px 4px 0px #B8784A' }}>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3154.8!2d144.9204!3d-37.6865!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad646b5d2ba4df7%3A0x5045675218ceed0!2sBroadmeadows%20VIC%203047!5e0!3m2!1sen!2sau!4v1700000000000!5m2!1sen!2sau"
+              width="100%"
+              height="240"
+              style={{ border: 0, display: 'block' }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Salam Small Goods location — Broadmeadows VIC"
+            />
           </div>
         </div>
       </div>
