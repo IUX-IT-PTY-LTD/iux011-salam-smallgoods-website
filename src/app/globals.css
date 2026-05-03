@@ -19,6 +19,21 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+/* ─── Admin Table Overrides ─────────────────────────────── */
+
+/* Remove the extra bottom gap Ant Design adds inside a bordered card */
+.products-table .ant-table {
+  border-radius: 0;
+}
+.products-table .ant-table-container {
+  border-radius: 0;
+  border-inline-start: none;
+  border-top: none;
+}
+.products-table .ant-table-wrapper {
+  margin: 0;
+}
+
 /* ─── Claymorphism Utilities ────────────────────────────── */
 
 .clay-card {
