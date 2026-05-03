@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Drawer } from 'antd';
-import { categories } from '@/lib/products';
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -13,7 +12,7 @@ const navLinks = [
   { label: 'Contact Us', href: '/contact' },
 ];
 
-export default function Navbar() {
+export default function Navbar({ categories = [] }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
@@ -67,12 +66,8 @@ export default function Navbar() {
                         fontWeight: active ? 700 : 500,
                         fontSize: 15,
                         color: active ? '#ffffff' : '#2A0D04',
-                        background: active
-                          ? 'linear-gradient(145deg, #CC3A20, #B02808)'
-                          : 'transparent',
-                        boxShadow: active
-                          ? '3px 3px 0px #7A1808, inset 2px 2px 6px #E05030'
-                          : 'none',
+                        background: active ? 'linear-gradient(145deg, #CC3A20, #B02808)' : 'transparent',
+                        boxShadow: active ? '3px 3px 0px #7A1808, inset 2px 2px 6px #E05030' : 'none',
                         transition: 'all 0.15s ease',
                         display: 'inline-flex',
                         alignItems: 'center',
@@ -99,56 +94,22 @@ export default function Navbar() {
                         gap: 4,
                       }}
                     >
-                      <Link
-                        href="/products"
-                        style={{ textDecoration: 'none' }}
-                        onClick={() => setDropdownOpen(false)}
-                      >
+                      <Link href="/products" style={{ textDecoration: 'none' }} onClick={() => setDropdownOpen(false)}>
                         <div
-                          style={{
-                            padding: '8px 14px',
-                            borderRadius: 10,
-                            fontSize: 14,
-                            fontWeight: 700,
-                            color: '#CC3A20',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'linear-gradient(145deg, #CC3A20, #B02808)';
-                            e.currentTarget.style.color = '#fff';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'transparent';
-                            e.currentTarget.style.color = '#CC3A20';
-                          }}
+                          style={{ padding: '8px 14px', borderRadius: 10, fontSize: 14, fontWeight: 700, color: '#CC3A20' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = 'linear-gradient(145deg, #CC3A20, #B02808)'; e.currentTarget.style.color = '#fff'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#CC3A20'; }}
                         >
                           All Products
                         </div>
                       </Link>
                       <div style={{ height: 1, background: '#D4A870', margin: '4px 6px' }} />
                       {categories.map((cat) => (
-                        <Link
-                          key={cat.slug}
-                          href={`/products/${cat.slug}`}
-                          style={{ textDecoration: 'none' }}
-                          onClick={() => setDropdownOpen(false)}
-                        >
+                        <Link key={cat.slug} href={`/products/${cat.slug}`} style={{ textDecoration: 'none' }} onClick={() => setDropdownOpen(false)}>
                           <div
-                            style={{
-                              padding: '8px 14px',
-                              borderRadius: 10,
-                              fontSize: 14,
-                              fontWeight: 500,
-                              color: '#2A0D04',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 8,
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background = 'linear-gradient(145deg, #EDD5B0, #E0C090)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = 'transparent';
-                            }}
+                            style={{ padding: '8px 14px', borderRadius: 10, fontSize: 14, fontWeight: 500, color: '#2A0D04', display: 'flex', alignItems: 'center', gap: 8 }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = 'linear-gradient(145deg, #EDD5B0, #E0C090)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                           >
                             <span>{cat.emoji}</span>
                             {cat.label}
@@ -170,12 +131,8 @@ export default function Navbar() {
                     fontWeight: active ? 700 : 500,
                     fontSize: 15,
                     color: active ? '#ffffff' : '#2A0D04',
-                    background: active
-                      ? 'linear-gradient(145deg, #CC3A20, #B02808)'
-                      : 'transparent',
-                    boxShadow: active
-                      ? '3px 3px 0px #7A1808, inset 2px 2px 6px #E05030'
-                      : 'none',
+                    background: active ? 'linear-gradient(145deg, #CC3A20, #B02808)' : 'transparent',
+                    boxShadow: active ? '3px 3px 0px #7A1808, inset 2px 2px 6px #E05030' : 'none',
                     transition: 'all 0.15s ease',
                     display: 'inline-block',
                   }}
@@ -229,75 +186,23 @@ export default function Navbar() {
               return (
                 <div key={link.href}>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                    <Link
-                      href={link.href}
-                      onClick={() => setDrawerOpen(false)}
-                      style={{ textDecoration: 'none', flex: 1 }}
-                    >
-                      <div
-                        style={{
-                          padding: '12px 20px',
-                          borderRadius: 16,
-                          fontWeight: active ? 700 : 500,
-                          fontSize: 16,
-                          color: active ? '#ffffff' : '#2A0D04',
-                          background: active
-                            ? 'linear-gradient(145deg, #CC3A20, #B02808)'
-                            : 'linear-gradient(145deg, #EDD5B0, #E0C090)',
-                          boxShadow: active ? '3px 3px 0px #7A1808' : '3px 3px 0px #B8784A',
-                        }}
-                      >
+                    <Link href={link.href} onClick={() => setDrawerOpen(false)} style={{ textDecoration: 'none', flex: 1 }}>
+                      <div style={{ padding: '12px 20px', borderRadius: 16, fontWeight: active ? 700 : 500, fontSize: 16, color: active ? '#ffffff' : '#2A0D04', background: active ? 'linear-gradient(145deg, #CC3A20, #B02808)' : 'linear-gradient(145deg, #EDD5B0, #E0C090)', boxShadow: active ? '3px 3px 0px #7A1808' : '3px 3px 0px #B8784A' }}>
                         {link.label}
                       </div>
                     </Link>
                     <button
                       onClick={() => setMobileProductsOpen((v) => !v)}
-                      style={{
-                        background: 'linear-gradient(145deg, #EDD5B0, #E0C090)',
-                        border: 'none',
-                        borderRadius: 12,
-                        padding: '12px 14px',
-                        cursor: 'pointer',
-                        boxShadow: '3px 3px 0px #B8784A',
-                        fontSize: 14,
-                        color: '#2A0D04',
-                        fontWeight: 700,
-                      }}
+                      style={{ background: 'linear-gradient(145deg, #EDD5B0, #E0C090)', border: 'none', borderRadius: 12, padding: '12px 14px', cursor: 'pointer', boxShadow: '3px 3px 0px #B8784A', fontSize: 14, color: '#2A0D04', fontWeight: 700 }}
                     >
                       {mobileProductsOpen ? '▲' : '▼'}
                     </button>
                   </div>
                   {mobileProductsOpen && (
-                    <div
-                      style={{
-                        marginLeft: 16,
-                        marginTop: 6,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 6,
-                      }}
-                    >
+                    <div style={{ marginLeft: 16, marginTop: 6, display: 'flex', flexDirection: 'column', gap: 6 }}>
                       {categories.map((cat) => (
-                        <Link
-                          key={cat.slug}
-                          href={`/products/${cat.slug}`}
-                          onClick={() => { setDrawerOpen(false); setMobileProductsOpen(false); }}
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <div
-                            style={{
-                              padding: '10px 16px',
-                              borderRadius: 12,
-                              fontSize: 14,
-                              fontWeight: 500,
-                              color: '#2A0D04',
-                              background: 'linear-gradient(145deg, #EDD5B0, #E0C090)',
-                              boxShadow: '2px 2px 0px #B8784A',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 8,
-                            }}
-                          >
+                        <Link key={cat.slug} href={`/products/${cat.slug}`} onClick={() => { setDrawerOpen(false); setMobileProductsOpen(false); }} style={{ textDecoration: 'none' }}>
+                          <div style={{ padding: '10px 16px', borderRadius: 12, fontSize: 14, fontWeight: 500, color: '#2A0D04', background: 'linear-gradient(145deg, #EDD5B0, #E0C090)', boxShadow: '2px 2px 0px #B8784A', display: 'flex', alignItems: 'center', gap: 8 }}>
                             <span>{cat.emoji}</span>
                             {cat.label}
                           </div>
@@ -310,25 +215,8 @@ export default function Navbar() {
             }
 
             return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setDrawerOpen(false)}
-                style={{ textDecoration: 'none' }}
-              >
-                <div
-                  style={{
-                    padding: '12px 20px',
-                    borderRadius: 16,
-                    fontWeight: active ? 700 : 500,
-                    fontSize: 16,
-                    color: active ? '#ffffff' : '#2A0D04',
-                    background: active
-                      ? 'linear-gradient(145deg, #CC3A20, #B02808)'
-                      : 'linear-gradient(145deg, #EDD5B0, #E0C090)',
-                    boxShadow: active ? '3px 3px 0px #7A1808' : '3px 3px 0px #B8784A',
-                  }}
-                >
+              <Link key={link.href} href={link.href} onClick={() => setDrawerOpen(false)} style={{ textDecoration: 'none' }}>
+                <div style={{ padding: '12px 20px', borderRadius: 16, fontWeight: active ? 700 : 500, fontSize: 16, color: active ? '#ffffff' : '#2A0D04', background: active ? 'linear-gradient(145deg, #CC3A20, #B02808)' : 'linear-gradient(145deg, #EDD5B0, #E0C090)', boxShadow: active ? '3px 3px 0px #7A1808' : '3px 3px 0px #B8784A' }}>
                   {link.label}
                 </div>
               </Link>
@@ -339,12 +227,8 @@ export default function Navbar() {
 
       <style jsx>{`
         @media (max-width: 640px) {
-          .desktop-nav {
-            display: none !important;
-          }
-          .mobile-menu-btn {
-            display: block !important;
-          }
+          .desktop-nav { display: none !important; }
+          .mobile-menu-btn { display: block !important; }
         }
       `}</style>
     </header>

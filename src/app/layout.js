@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { getTheme, buildThemeCss } from '@/lib/theme';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,12 +18,16 @@ export const metadata = {
     "Family-owned butcher shop offering fresh, halal-certified meats and house-made smallgoods in Broadmeadows, VIC.",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const theme = await getTheme();
+  const themeCss = buildThemeCss(theme);
+
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: themeCss }} />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
     </html>
