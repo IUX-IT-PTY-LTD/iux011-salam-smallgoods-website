@@ -1,46 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  /* ─── Palette tokens ──────────────────────────────────── */
-  /* Neutrals — 4 canonical text/surface tokens */
-  --color-ink:                #2A0D04;  /* headings, strong text */
-  --color-body:               #5A3020;  /* body text, descriptions */
-  --color-muted:              #7A5040;  /* labels, secondary text */
-  --color-surface:            #E8D0A8;  /* page background */
-
-  /* Card surfaces */
-  --color-surface-raised:     #FBF0DC;  /* card bg light stop */
-  --color-surface-mid:        #F5E4C4;  /* card bg dark stop */
-  --color-surface-strong:     #F8EDD4;  /* elevated card light stop */
-  --color-surface-strong-mid: #F0E0BC;  /* elevated card dark stop */
-  --color-surface-hi:         #FFFAF2;  /* inset highlight */
-
-  /* Clay shadows */
-  --color-shadow:             #B8784A;  /* standard clay shadow */
-  --color-shadow-strong:      #A06838;  /* elevated clay shadow */
-  --color-shadow-inset:       #D4A870;  /* inset shadow */
-
-  /* Brand accent */
-  --color-accent:             #CC3A20;  /* primary red — CTAs, large accent text */
-  --color-accent-dark:        #B02808;  /* accent dark gradient stop */
-  --color-accent-shadow:      #7A1808;  /* accent hard shadow */
-  --color-accent-hi:          #E05030;  /* accent inset highlight */
-
-  /* Status */
-  --color-status-ok:          #3E6B2A;  /* in stock — earthy olive */
-  --color-status-ok-dk:       #2E5220;  /* in stock dark stop */
-  --color-status-ok-sh:       #1E3A10;  /* in stock shadow */
-  --color-status-err:         #A83020;  /* out of stock — warm red */
-  --color-status-err-dk:      #7A1808;  /* out of stock dark stop */
-  --color-status-err-sh:      #4A0C00;  /* out of stock shadow */
-
-  /* Footer */
-  --color-footer-bg:          #1A0804;
-  --color-footer-bg2:         #2A1208;
-  --color-footer-text:        #EDD5B0;
-  --color-footer-muted:       #B89070;
-
-  /* Legacy compat */
+  /* Aliases — token values are injected by layout.js from Firestore */
   --background: var(--color-surface);
   --foreground: var(--color-ink);
 }

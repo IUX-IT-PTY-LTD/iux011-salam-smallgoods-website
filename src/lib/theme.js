@@ -37,7 +37,15 @@ function tokenToCssVar(key) {
 export async function getTheme() {
   try {
     const snap = await adminDb.doc('site_theme/config').get();
-    return snap.exists ? snap.data() : DEFAULT_THEME;
+    if (!snap.exists) return DEFAULT_THEME;
+    const data = snap.data();
+    // Strip non-serializable Firestore types (Timestamps, etc.)
+    const plain = {};
+    for (const [k, v] of Object.entries(data)) {
+      if (v && typeof v === 'object' && typeof v.toDate === 'function') continue;
+      plain[k] = v;
+    }
+    return plain;
   } catch {
     return DEFAULT_THEME;
   }
