@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Drawer } from 'antd';
 
@@ -12,7 +13,7 @@ const navLinks = [
   { label: 'Contact Us', href: '/contact' },
 ];
 
-export default function Navbar({ categories = [] }) {
+export default function Navbar({ categories = [], shopInfo = null }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
@@ -33,13 +34,18 @@ export default function Navbar({ categories = [] }) {
         {/* Logo */}
         <Link href="/" style={{ textDecoration: 'none' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 28 }}>🥩</span>
+            {shopInfo?.logoUrl
+              ? <div style={{ position: 'relative', height: 40, width: 120, flexShrink: 0 }}>
+                  <Image src={shopInfo.logoUrl} alt={shopInfo.name ?? 'Logo'} fill style={{ objectFit: 'contain', objectPosition: 'left center' }} />
+                </div>
+              : <span style={{ fontSize: 28 }}>🥩</span>
+            }
             <div>
               <div style={{ fontWeight: 800, fontSize: 18, color: '#2A0D04', lineHeight: 1.1 }}>
-                Salam Small Goods
+                {shopInfo?.name ?? 'Salam Small Goods'}
               </div>
               <div style={{ fontSize: 11, color: '#7A5040', fontWeight: 500 }}>
-                Premium Halal Meats
+                {shopInfo?.tagline ?? 'Premium Halal Meats'}
               </div>
             </div>
           </div>
@@ -168,8 +174,13 @@ export default function Navbar({ categories = [] }) {
       <Drawer
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span>🥩</span>
-            <span style={{ fontWeight: 800, color: '#2A0D04' }}>Salam Small Goods</span>
+            {shopInfo?.logoUrl
+              ? <div style={{ position: 'relative', height: 28, width: 80, flexShrink: 0 }}>
+                  <Image src={shopInfo.logoUrl} alt={shopInfo.name ?? 'Logo'} fill style={{ objectFit: 'contain', objectPosition: 'left center' }} />
+                </div>
+              : <span>🥩</span>
+            }
+            <span style={{ fontWeight: 800, color: '#2A0D04' }}>{shopInfo?.name ?? 'Salam Small Goods'}</span>
           </div>
         }
         placement="right"

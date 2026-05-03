@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Layout, Menu, Button } from 'antd';
+import { Layout, Menu, Button, App } from 'antd';
 import {
   DashboardOutlined,
   EditOutlined,
@@ -45,6 +45,7 @@ export default function AdminShell({ children }) {
   }
 
   return (
+    <App>
     <Layout style={{ minHeight: '100vh' }}>
       <Sider
         collapsible
@@ -137,5 +138,6 @@ export default function AdminShell({ children }) {
         </Content>
       </Layout>
     </Layout>
+    </App>
   );
 }

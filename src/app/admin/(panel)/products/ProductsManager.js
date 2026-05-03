@@ -1,20 +1,22 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useMemo } from 'react';
 import {
-  Table, Button, Drawer, Form, Input, Select, Switch, InputNumber,
-  Space, Popconfirm, Tag, App, Upload, Image, Typography, Divider,
+  Table, Button, Drawer, Form, Input, Select, Switch,
+  Space, Tag, App, Upload, Typography, Modal,
 } from 'antd';
 import {
-  PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined,
+  PlusOutlined, EditOutlined, DeleteOutlined,
+  UploadOutlined, SearchOutlined, EyeOutlined,
 } from '@ant-design/icons';
 import {
-  createProduct, updateProduct, deleteProduct,
-  toggleProductStock, toggleProductFeatured,
+  createProduct, updateProduct, deleteProduct, toggleProductStock,
 } from '@/app/actions/products';
 
 const { TextArea } = Input;
-const { Title } = Typography;
+const { Title, Text } = Typography;
+
+// ─── Cloudinary upload helper ─────────────────────────────────────────────────
 
 async function uploadToCloudinary(file) {
   const res = await fetch('/api/admin/upload', {
@@ -23,14 +25,12 @@ async function uploadToCloudinary(file) {
     body: JSON.stringify({ folder: 'salam-smallgoods/products' }),
   });
   const { signature, timestamp, cloudName, apiKey, folder } = await res.json();
-
   const formData = new FormData();
   formData.append('file', file);
   formData.append('signature', signature);
   formData.append('timestamp', timestamp);
   formData.append('api_key', apiKey);
   formData.append('folder', folder);
-
   const upload = await fetch(
     `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
     { method: 'POST', body: formData }
@@ -38,18 +38,103 @@ async function uploadToCloudinary(file) {
   return upload.json();
 }
 
-export default function ProductsManager({ initialProducts, categories }) {
-  const { message } = App.useApp();
-  const [products, setProducts] = useState(initialProducts);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [editing, setEditing] = useState(null);
-  const [form] = Form.useForm();
-  const [imageUrl, setImageUrl] = useState('');
-  const [imagePublicId, setImagePublicId] = useState('');
-  const [uploading, setUploading] = useState(false);
-  const [isPending, startTransition] = useTransition();
+// ─── ImageUpload ─────────────────────────────────────────────────────────────
 
-  const categoryOptions = categories.map((c) => ({ value: c.slug, label: c.label }));
+function ImageUpload({ imageUrl, onUpload, onRemove, uploading }) {
+  if (imageUrl) {
+    return (
+      <div>
+        <div style={{ borderRadius: 10, overflow: 'hidden', marginBottom: 10, border: '1.5px solid #E8C098' }}>
+          <img
+            src={imageUrl}
+            alt="Product preview"
+            style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }}
+          />
+        </div>
+        <Space>
+          <Upload showUploadList={false} customRequest={onUpload} accept="image/*">
+            <Button size="small" icon={<UploadOutlined />} loading={uploading}>
+              Replace image
+            </Button>
+          </Upload>
+          <Button size="small" danger onClick={onRemove}>Remove</Button>
+        </Space>
+      </div>
+    );
+  }
+
+  return (
+    <Upload.Dragger
+      showUploadList={false}
+      customRequest={onUpload}
+      accept="image/*"
+      style={{
+        borderRadius: 10,
+        background: '#FFFAF2',
+        borderColor: '#C4956A',
+        borderStyle: 'dashed',
+      }}
+    >
+      <div style={{ padding: '12px 0' }}>
+        <div style={{ fontSize: 32, marginBottom: 8 }}>📷</div>
+        <p style={{ fontWeight: 600, color: '#2A0D04', margin: 0, fontSize: 14 }}>
+          {uploading ? 'Uploading…' : 'Drop image here, or click to browse'}
+        </p>
+        <p style={{ fontSize: 12, color: '#7A5040', margin: '4px 0 0' }}>
+          JPG, PNG or WebP — max 10 MB
+        </p>
+      </div>
+    </Upload.Dragger>
+  );
+}
+
+// ─── FormSection ─────────────────────────────────────────────────────────────
+
+function FormSection({ label, children, style }) {
+  return (
+    <div style={{ marginBottom: 28, ...style }}>
+      <div style={{
+        fontSize: 11, fontWeight: 700, color: '#CC3A20',
+        textTransform: 'uppercase', letterSpacing: '0.08em',
+        marginBottom: 14, paddingBottom: 8,
+        borderBottom: '1.5px solid #F0DDB8',
+      }}>
+        {label}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ─── ProductsManager ──────────────────────────────────────────────────────────
+
+export default function ProductsManager({ initialProducts, categories }) {
+  const { message, modal } = App.useApp();
+  const [products, setProducts]     = useState(initialProducts);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editing, setEditing]       = useState(null);
+  const [form]                      = Form.useForm();
+  const [imageUrl, setImageUrl]     = useState('');
+  const [imagePublicId, setImagePublicId] = useState('');
+  const [uploading, setUploading]   = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [search, setSearch]         = useState('');
+  const [categoryFilter, setCategoryFilter] = useState(null);
+
+  const categoryOptions = categories.map((c) => ({
+    value: c.slug,
+    label: `${c.emoji ?? ''} ${c.label}`.trim(),
+  }));
+
+  // ─── Client-side filtering ────────────────────────────────────────────────
+
+  const filteredProducts = useMemo(() => products.filter((p) => {
+    const matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase());
+    const matchCat    = !categoryFilter || p.categorySlug === categoryFilter;
+    return matchSearch && matchCat;
+  }), [products, search, categoryFilter]);
+
+  // ─── Drawer open/close ────────────────────────────────────────────────────
 
   function openCreate() {
     setEditing(null);
@@ -62,18 +147,24 @@ export default function ProductsManager({ initialProducts, categories }) {
   function openEdit(product) {
     setEditing(product);
     form.setFieldsValue({
-      name: product.name,
+      name:         product.name,
       categorySlug: product.categorySlug,
-      description: product.description,
-      details: product.details,
-      inStock: product.inStock,
-      featured: product.featured,
-      order: product.order,
+      description:  product.description,
+      details:      product.details,
+      inStock:      product.inStock,
+      featured:     product.featured,
     });
     setImageUrl(product.imageUrl ?? '');
     setImagePublicId(product.imagePublicId ?? '');
     setDrawerOpen(true);
   }
+
+  function closeDrawer() {
+    setDrawerOpen(false);
+    setEditing(null);
+  }
+
+  // ─── Image upload ─────────────────────────────────────────────────────────
 
   async function handleImageUpload({ file }) {
     setUploading(true);
@@ -94,6 +185,8 @@ export default function ProductsManager({ initialProducts, categories }) {
     return false;
   }
 
+  // ─── Save ─────────────────────────────────────────────────────────────────
+
   async function handleSave() {
     let values;
     try { values = await form.validateFields(); } catch { return; }
@@ -103,211 +196,343 @@ export default function ProductsManager({ initialProducts, categories }) {
         if (editing) {
           await updateProduct(editing.slug, { ...values, imageUrl, imagePublicId });
           setProducts((prev) =>
-            prev.map((p) => p.slug === editing.slug ? { ...p, ...values, imageUrl, imagePublicId } : p)
+            prev.map((p) =>
+              p.slug === editing.slug ? { ...p, ...values, imageUrl, imagePublicId } : p
+            )
           );
           message.success('Product updated');
         } else {
           const { slug } = await createProduct({ ...values, imageUrl, imagePublicId });
-          setProducts((prev) => [...prev, { slug, ...values, imageUrl, imagePublicId }]);
+          setProducts((prev) => [{ slug, ...values, imageUrl, imagePublicId, order: 99 }, ...prev]);
           message.success('Product created');
         }
-        setDrawerOpen(false);
+        closeDrawer();
       } catch (err) {
         message.error(err.message || 'Save failed');
       }
     });
   }
 
-  async function handleDelete(product) {
-    startTransition(async () => {
-      try {
-        await deleteProduct(product.slug, product.categorySlug);
-        setProducts((prev) => prev.filter((p) => p.slug !== product.slug));
-        message.success('Product deleted');
-      } catch (err) {
-        message.error(err.message || 'Delete failed');
-      }
+  // ─── Delete ───────────────────────────────────────────────────────────────
+
+  function confirmDelete(product) {
+    modal.confirm({
+      title: `Delete "${product.name}"?`,
+      content: 'This product will be permanently removed from the website and cannot be recovered.',
+      okText: 'Delete permanently',
+      okButtonProps: { danger: true },
+      cancelText: 'Keep product',
+      onOk: () => new Promise((resolve, reject) => {
+        startTransition(async () => {
+          try {
+            await deleteProduct(product.slug, product.categorySlug);
+            setProducts((prev) => prev.filter((p) => p.slug !== product.slug));
+            message.success(`"${product.name}" deleted`);
+            resolve();
+          } catch (err) {
+            message.error(err.message || 'Delete failed');
+            reject(err);
+          }
+        });
+      }),
     });
   }
 
-  async function handleStockToggle(product, inStock) {
+  // ─── Stock toggle ─────────────────────────────────────────────────────────
+
+  function handleStockToggle(product, inStock) {
     startTransition(async () => {
       try {
         await toggleProductStock(product.slug, inStock, product.categorySlug);
-        setProducts((prev) => prev.map((p) => p.slug === product.slug ? { ...p, inStock } : p));
+        setProducts((prev) =>
+          prev.map((p) => p.slug === product.slug ? { ...p, inStock } : p)
+        );
       } catch {
         message.error('Update failed');
       }
     });
   }
 
-  async function handleFeaturedToggle(product, featured) {
-    startTransition(async () => {
-      try {
-        await toggleProductFeatured(product.slug, featured);
-        setProducts((prev) => prev.map((p) => p.slug === product.slug ? { ...p, featured } : p));
-      } catch {
-        message.error('Update failed');
-      }
-    });
-  }
+  // ─── Table columns ────────────────────────────────────────────────────────
 
   const columns = [
     {
-      title: 'Image',
-      dataIndex: 'imageUrl',
-      width: 72,
-      render: (url) => url
-        ? <Image src={url} width={48} height={48} style={{ objectFit: 'cover', borderRadius: 8 }} preview={false} />
-        : <div style={{ width: 48, height: 48, background: '#F5E5C0', borderRadius: 8 }} />,
+      title: 'Product',
+      dataIndex: 'name',
+      sorter: (a, b) => a.name.localeCompare(b.name),
+      onCell: () => ({ style: { paddingLeft: 20 } }),
+      onHeaderCell: () => ({ style: { paddingLeft: 20 } }),
+      render: (name, record) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {record.imageUrl ? (
+            <img
+              src={record.imageUrl}
+              alt={name}
+              style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }}
+            />
+          ) : (
+            <div style={{
+              width: 48, height: 48, borderRadius: 8, flexShrink: 0,
+              background: '#F0DDB8', display: 'flex', alignItems: 'center',
+              justifyContent: 'center', fontSize: 22,
+            }}>
+              🥩
+            </div>
+          )}
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontWeight: 600, fontSize: 14, color: '#2A0D04', lineHeight: 1.3 }}>
+              {name}
+            </div>
+            <div style={{
+              fontSize: 12, color: '#9A8070', marginTop: 2,
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            }}>
+              {record.description}
+            </div>
+          </div>
+        </div>
+      ),
     },
-    { title: 'Name', dataIndex: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },
     {
       title: 'Category',
       dataIndex: 'categorySlug',
+      width: 190,
       render: (slug) => {
         const cat = categories.find((c) => c.slug === slug);
-        return <Tag color="gold">{cat?.label ?? slug}</Tag>;
+        return (
+          <Tag style={{ borderRadius: 20, fontWeight: 600, fontSize: 12 }}>
+            {cat?.emoji} {cat?.label ?? slug}
+          </Tag>
+        );
       },
-      filters: categories.map((c) => ({ text: c.label, value: c.slug })),
-      onFilter: (value, record) => record.categorySlug === value,
     },
     {
-      title: 'In Stock',
+      title: 'Stock',
       dataIndex: 'inStock',
-      width: 100,
-      render: (val, record) => (
-        <Switch checked={val} size="small" onChange={(v) => handleStockToggle(record, v)} />
+      width: 200,
+      render: (inStock, record) => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            <Switch
+              checked={inStock}
+              size="small"
+              onChange={(v) => handleStockToggle(record, v)}
+              style={{ background: inStock ? '#3E6B2A' : undefined }}
+            />
+            <Text style={{
+              fontSize: 12, fontWeight: 600,
+              color: inStock ? '#3E6B2A' : '#A83020',
+            }}>
+              {inStock ? 'In stock' : 'Out of stock'}
+            </Text>
+          </div>
+          {record.featured && (
+            <Text style={{ fontSize: 11, color: '#B45309' }}>⭐ Featured</Text>
+          )}
+        </div>
       ),
-      filters: [{ text: 'In Stock', value: true }, { text: 'Out of Stock', value: false }],
+      filters: [
+        { text: 'In Stock', value: true },
+        { text: 'Out of Stock', value: false },
+      ],
       onFilter: (value, record) => record.inStock === value,
     },
     {
-      title: 'Featured',
-      dataIndex: 'featured',
-      width: 100,
-      render: (val, record) => (
-        <Switch checked={val} size="small" onChange={(v) => handleFeaturedToggle(record, v)} />
-      ),
-    },
-    { title: 'Order', dataIndex: 'order', width: 80, sorter: (a, b) => a.order - b.order },
-    {
-      title: 'Actions',
-      width: 100,
+      title: '',
+      width: 170,
       render: (_, record) => (
-        <Space>
-          <Button size="small" icon={<EditOutlined />} onClick={() => openEdit(record)} />
-          <Popconfirm
-            title="Delete this product?"
-            onConfirm={() => handleDelete(record)}
-            okText="Delete"
-            okButtonProps={{ danger: true }}
-          >
-            <Button size="small" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
+        <Space size={4}>
+          <Button size="small" icon={<EditOutlined />} onClick={() => openEdit(record)}>
+            Edit
+          </Button>
+          <Button
+            size="small"
+            icon={<EyeOutlined />}
+            title="View on website"
+            onClick={() => window.open(`/products/${record.categorySlug}/${record.slug}`, '_blank')}
+          />
+          <Button
+            size="small"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => confirmDelete(record)}
+          />
         </Space>
       ),
     },
   ];
 
+  // ─── Render ───────────────────────────────────────────────────────────────
+
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <Title level={3} style={{ margin: 0 }}>Products</Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}
-          style={{ background: '#CC3A20', borderColor: '#CC3A20' }}>
+    <div style={{ padding: '28px 32px' }}>
+
+      {/* Page header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 24 }}>
+        <div>
+          <Title level={3} style={{ margin: 0, color: '#2A0D04' }}>Products</Title>
+          <Text type="secondary" style={{ fontSize: 13, marginTop: 4, display: 'block' }}>
+            {products.length} product{products.length !== 1 ? 's' : ''} across {categories.length} categories
+          </Text>
+        </div>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={openCreate}
+          style={{ background: '#CC3A20', borderColor: '#CC3A20', borderRadius: 8, fontWeight: 600 }}
+        >
           Add Product
         </Button>
       </div>
 
-      <Table
-        dataSource={products}
-        columns={columns}
-        rowKey="slug"
-        loading={isPending}
-        pagination={{ pageSize: 20, showSizeChanger: true }}
-        size="middle"
-      />
+      {/* Table card */}
+      <div style={{ background: '#FFFAF2', borderRadius: 16, border: '1.5px solid #E8C098', overflow: 'hidden' }}>
 
+        {/* Toolbar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 20px', borderBottom: '1.5px solid #E8C098' }}>
+          <Input
+            prefix={<SearchOutlined style={{ color: '#C4956A' }} />}
+            placeholder="Search products…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            allowClear
+            style={{ maxWidth: 260, borderRadius: 8 }}
+          />
+          <Select
+            placeholder="All categories"
+            options={categoryOptions}
+            value={categoryFilter}
+            onChange={(v) => setCategoryFilter(v ?? null)}
+            allowClear
+            style={{ width: 180 }}
+          />
+          {(search || categoryFilter) && (
+            <Text type="secondary" style={{ fontSize: 13 }}>
+              {filteredProducts.length} result{filteredProducts.length !== 1 ? 's' : ''}
+            </Text>
+          )}
+        </div>
+
+        <Table
+          dataSource={filteredProducts}
+          columns={columns}
+          rowKey="slug"
+          loading={isPending}
+          pagination={{ pageSize: 20, showSizeChanger: false, hideOnSinglePage: true }}
+          size="middle"
+          onRow={(record) => ({
+            style: { opacity: record.inStock ? 1 : 0.6 },
+          })}
+          style={{ margin: 0 }}
+          className="products-table"
+        />
+      </div>
+
+      {/* Drawer */}
       <Drawer
-        title={editing ? `Edit: ${editing.name}` : 'Add New Product'}
+        title={
+          <span style={{ fontWeight: 700, color: '#2A0D04', fontSize: 16 }}>
+            {editing ? `Edit: ${editing.name}` : 'New Product'}
+          </span>
+        }
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={closeDrawer}
         width={520}
+        styles={{ body: { padding: '24px 28px', background: '#FFFAF2' } }}
         footer={
-          <Space style={{ float: 'right' }}>
-            <Button onClick={() => setDrawerOpen(false)}>Cancel</Button>
-            <Button type="primary" loading={isPending} onClick={handleSave}
-              style={{ background: '#CC3A20', borderColor: '#CC3A20' }}>
-              Save
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+            <Button onClick={closeDrawer}>Cancel</Button>
+            <Button
+              type="primary"
+              loading={isPending}
+              onClick={handleSave}
+              style={{ background: '#CC3A20', borderColor: '#CC3A20', borderRadius: 8, fontWeight: 600 }}
+            >
+              {editing ? 'Save changes' : 'Create product'}
             </Button>
-          </Space>
+          </div>
         }
       >
-        <Form form={form} layout="vertical" requiredMark="optional">
-          <Form.Item name="name" label="Product Name" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
+        <Form form={form} layout="vertical" requiredMark={false}>
 
-          <Form.Item name="categorySlug" label="Category" rules={[{ required: true }]}>
-            <Select options={categoryOptions} />
-          </Form.Item>
+          <FormSection label="Basic Info">
+            <Form.Item
+              name="name"
+              label={<span style={{ fontWeight: 600, color: '#2A0D04' }}>Product Name</span>}
+              rules={[{ required: true, message: 'Name is required' }]}
+            >
+              <Input placeholder="e.g. Beef Sausages" style={{ borderRadius: 8 }} />
+            </Form.Item>
+            <Form.Item
+              name="categorySlug"
+              label={<span style={{ fontWeight: 600, color: '#2A0D04' }}>Category</span>}
+              rules={[{ required: true, message: 'Select a category' }]}
+              style={{ marginBottom: 0 }}
+            >
+              <Select options={categoryOptions} placeholder="Select a category" />
+            </Form.Item>
+          </FormSection>
 
-          <Form.Item name="description" label="Short Description" rules={[{ required: true }]}>
-            <TextArea rows={2} />
-          </Form.Item>
+          <FormSection label="Description">
+            <Form.Item
+              name="description"
+              label={<span style={{ fontWeight: 600, color: '#2A0D04' }}>Short Description</span>}
+              rules={[{ required: true, message: 'Short description is required' }]}
+              extra="Shown on product cards — keep it under 100 characters"
+            >
+              <TextArea
+                rows={2}
+                placeholder="e.g. Juicy, seasoned beef sausages — perfect for the BBQ"
+                style={{ borderRadius: 8 }}
+              />
+            </Form.Item>
+            <Form.Item
+              name="details"
+              label={<span style={{ fontWeight: 600, color: '#2A0D04' }}>Full Details</span>}
+              extra="Shown on the product detail page — sourcing, preparation, serving tips"
+              style={{ marginBottom: 0 }}
+            >
+              <TextArea
+                rows={5}
+                placeholder="Describe this product in full — where it comes from, how it's prepared, how to serve it…"
+                style={{ borderRadius: 8 }}
+              />
+            </Form.Item>
+          </FormSection>
 
-          <Form.Item name="details" label="Full Details">
-            <TextArea rows={4} />
-          </Form.Item>
+          <FormSection label="Image">
+            <ImageUpload
+              imageUrl={imageUrl}
+              imagePublicId={imagePublicId}
+              onUpload={handleImageUpload}
+              onRemove={() => { setImageUrl(''); setImagePublicId(''); }}
+              uploading={uploading}
+            />
+          </FormSection>
 
-          <Divider>Image</Divider>
-
-          {imageUrl && (
-            <div style={{ marginBottom: 16 }}>
-              <img src={imageUrl} alt="preview" style={{ width: '100%', maxHeight: 180, objectFit: 'cover', borderRadius: 8 }} />
+          <FormSection label="Status" style={{ marginBottom: 0 }}>
+            <div style={{ display: 'flex', gap: 40 }}>
+              <Form.Item
+                name="inStock"
+                label={<span style={{ fontWeight: 600, color: '#2A0D04' }}>In Stock</span>}
+                valuePropName="checked"
+                initialValue={true}
+                style={{ margin: 0 }}
+              >
+                <Switch />
+              </Form.Item>
+              <Form.Item
+                name="featured"
+                label={<span style={{ fontWeight: 600, color: '#2A0D04' }}>Featured on Homepage</span>}
+                valuePropName="checked"
+                initialValue={false}
+                style={{ margin: 0 }}
+              >
+                <Switch />
+              </Form.Item>
             </div>
-          )}
-          <Upload
-            showUploadList={false}
-            beforeUpload={() => false}
-            customRequest={handleImageUpload}
-            accept="image/*"
-          >
-            <Button icon={<UploadOutlined />} loading={uploading}>
-              {imageUrl ? 'Replace Image' : 'Upload Image'}
-            </Button>
-          </Upload>
-          {imageUrl && (
-            <Input
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="Or paste Cloudinary URL"
-              style={{ marginTop: 8 }}
-            />
-          )}
-          {!imageUrl && (
-            <Input
-              placeholder="Or paste image URL"
-              onChange={(e) => setImageUrl(e.target.value)}
-              style={{ marginTop: 8 }}
-            />
-          )}
+          </FormSection>
 
-          <Divider />
-
-          <Space style={{ width: '100%' }} direction="vertical">
-            <Form.Item name="inStock" label="In Stock" valuePropName="checked" initialValue={true} style={{ margin: 0 }}>
-              <Switch />
-            </Form.Item>
-            <Form.Item name="featured" label="Featured on Homepage" valuePropName="checked" initialValue={false} style={{ margin: 0 }}>
-              <Switch />
-            </Form.Item>
-          </Space>
-
-          <Form.Item name="order" label="Sort Order" initialValue={99} style={{ marginTop: 16 }}>
-            <InputNumber min={0} max={999} />
-          </Form.Item>
         </Form>
       </Drawer>
     </div>

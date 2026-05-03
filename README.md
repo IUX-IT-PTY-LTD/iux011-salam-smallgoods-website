@@ -1,6 +1,6 @@
 # Salam Small Goods — Website
 
-A multi-page marketing website for **Salam Small Goods**, a family-owned halal butcher shop in Broadmeadows, VIC. Built with Next.js using a **claymorphism** UI design style.
+A full-stack marketing website with a custom CMS admin panel for **Salam Small Goods**, a family-owned halal butcher shop in Broadmeadows, VIC. Built with Next.js, Firebase, and a **claymorphism** UI design style.
 
 ---
 
@@ -9,12 +9,17 @@ A multi-page marketing website for **Salam Small Goods**, a family-owned halal b
 - [Project Overview](#project-overview)
 - [Tech Stack](#tech-stack)
 - [Design System](#design-system)
+- [Architecture](#architecture)
 - [Project Structure](#project-structure)
-- [Pages](#pages)
+- [Public Pages](#public-pages)
+- [Admin Panel](#admin-panel)
+- [API Routes](#api-routes)
 - [Data Layer](#data-layer)
-- [Components](#components)
+- [Authentication](#authentication)
+- [Environment Variables](#environment-variables)
 - [Getting Started](#getting-started)
 - [Scripts](#scripts)
+- [Deployment](#deployment)
 
 ---
 
@@ -25,22 +30,30 @@ A multi-page marketing website for **Salam Small Goods**, a family-owned halal b
 | Project ID | `iux011` |
 | Client | Salam Small Goods |
 | Developer | IUX IT Pty Ltd |
-| Framework | Next.js 16 (App Router) |
+| Framework | Next.js 16.1.6 (App Router) |
 | Styling | Tailwind CSS v4 + Custom CSS (Claymorphism) |
-| UI Library | Ant Design v6 |
+| UI Library | Ant Design v5 |
 | Language | JavaScript (JSX) |
+| Database | Cloud Firestore |
+| Auth | Firebase Authentication |
+| Images | Cloudinary |
+| Email | Resend |
+| Deployment | Vercel |
 
 ---
 
 ## Tech Stack
 
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Next.js | 16.1.6 | React framework, routing, SSR/SSG |
-| React | 19.2.3 | UI rendering |
-| Ant Design | ^6.3.2 | Contact form, mobile nav Drawer |
-| Tailwind CSS | ^4 | Utility-first CSS base |
-| @tailwindcss/postcss | ^4 | Tailwind PostCSS integration |
+| Technology | Purpose |
+|------------|---------|
+| Next.js 16.1.6 | React framework, routing, SSR/SSG, Server Actions |
+| React 19 | UI rendering |
+| Ant Design v5 | Admin panel UI components |
+| Tailwind CSS v4 | Utility CSS base |
+| Firebase Admin SDK | Server-side Firestore reads/writes, session cookie auth |
+| Firebase Client SDK | Client-side `signInWithEmailAndPassword` (admin login only) |
+| Cloudinary | Product image uploads, transformation, CDN delivery |
+| Resend | Outbound email for admin contact replies |
 
 ---
 
@@ -56,60 +69,22 @@ The UI uses **claymorphism** — elements appear soft, tactile, and slightly 3D 
 - Warm gradient backgrounds on cards and buttons
 - No hard borders — everything is rounded
 
-### Colour Palette
+### Colour Tokens
 
-All colours are defined as CSS custom properties in `src/app/globals.css`.
+All colour tokens are stored in Firestore (`site_theme/config`) and injected as CSS custom properties at render time via `src/app/layout.js`. They can be edited live from the `/admin/design` panel.
 
-#### Core Tokens
+The static `:root {}` block has been removed from `globals.css` — tokens come exclusively from the database.
 
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--color-ink` | `#2A0D04` | Headings, strong text |
-| `--color-body` | `#5A3020` | Body text, descriptions |
-| `--color-muted` | `#7A5040` | Labels, secondary text |
-| `--color-surface` | `#E8D0A8` | Page background |
+#### Token Groups
 
-#### Card Surfaces
-
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--color-surface-raised` | `#FBF0DC` | Card background (light stop) |
-| `--color-surface-mid` | `#F5E4C4` | Card background (dark stop) |
-| `--color-surface-strong` | `#F8EDD4` | Elevated card (light stop) |
-| `--color-surface-strong-mid` | `#F0E0BC` | Elevated card (dark stop) |
-| `--color-surface-hi` | `#FFFAF2` | Inset highlight |
-
-#### Clay Shadows
-
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--color-shadow` | `#B8784A` | Standard clay hard shadow |
-| `--color-shadow-strong` | `#A06838` | Elevated card shadow |
-| `--color-shadow-inset` | `#D4A870` | Inset shadow |
-
-#### Brand Accent
-
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--color-accent` | `#CC3A20` | Primary red — CTAs, accent headings |
-| `--color-accent-dark` | `#B02808` | Accent gradient dark stop |
-| `--color-accent-shadow` | `#7A1808` | Accent hard shadow |
-| `--color-accent-hi` | `#E05030` | Accent inset highlight |
-
-#### Status
-
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--color-status-ok` | `#3E6B2A` | In Stock badge |
-| `--color-status-err` | `#A83020` | Out of Stock badge |
-
-#### Footer
-
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--color-footer-bg` | `#1A0804` | Footer background |
-| `--color-footer-text` | `#EDD5B0` | Footer headings |
-| `--color-footer-muted` | `#B89070` | Footer body text |
+| Group | Tokens | Usage |
+|-------|--------|-------|
+| Text | `colorInk`, `colorBody`, `colorMuted` | Headings, body, secondary text |
+| Surfaces | `colorSurface`, `colorSurfaceRaised`, `colorSurfaceMid`, `colorSurfaceStrong`, `colorSurfaceStrongMid`, `colorSurfaceHi` | Page bg, card backgrounds |
+| Shadows | `colorShadow`, `colorShadowStrong`, `colorShadowInset` | Clay hard shadows and insets |
+| Accent | `colorAccent`, `colorAccentDark`, `colorAccentShadow`, `colorAccentHi` | CTAs, banners, active states |
+| Status | `colorStatusOk`, `colorStatusErr` | In Stock / Out of Stock badges |
+| Footer | `colorFooterBg`, `colorFooterBg2`, `colorFooterText`, `colorFooterMuted` | Footer background and text |
 
 ### Clay CSS Utility Classes
 
@@ -125,15 +100,53 @@ Defined in `src/app/globals.css`:
 | `.clay-filter-btn-active` | Active category filter pill (red) |
 | `.clay-badge` | Small floating label pill |
 | `.clay-banner` | Full-width red gradient page header banner |
-| `.product-image-container` | `aspect-ratio: 4/3` image wrapper for product cards — swap emoji placeholder for `<Image>` when real photos are ready |
+| `.product-image-container` | `aspect-ratio: 4/3` image wrapper for product cards |
 
-### Responsive Layout Classes
+---
 
-| Class | Behaviour |
-|-------|-----------|
-| `.hero-grid` | 2-col grid → 1-col on mobile (hides right visual column) |
-| `.about-grid` | 2-col grid → 1-col on mobile |
-| `.contact-grid` | 3:2 col grid → 1-col on mobile |
+## Architecture
+
+### Data Flow
+
+```
+Public pages (Server Components)
+  └── src/lib/products.js     → Firestore /products, /categories
+  └── src/lib/shopInfo.js     → Firestore /shop_info/config
+  └── src/lib/content.js      → Firestore /page_sections/{id}/content_blocks
+  └── src/lib/theme.js        → Firestore /site_theme/config
+        └── injected as <style> in layout.js
+
+Admin panel (/admin/*)
+  └── Ant Design client components
+  └── Server Actions (src/app/actions/)
+        └── write to Firestore → revalidatePath → public pages update
+
+Contact form
+  └── POST /api/contact → Firestore /contact_submissions
+  └── Admin replies → /api/admin/contacts/[id]/reply
+        └── Firestore /replies subcollection + Resend email
+```
+
+### Auth Flow
+
+1. Admin enters credentials at `/admin/login`
+2. Firebase client SDK `signInWithEmailAndPassword` → ID token
+3. Client POSTs ID token to `POST /api/auth/session`
+4. Server creates `httpOnly` session cookie via `adminAuth.createSessionCookie`
+5. `src/proxy.js` verifies the cookie on every `/admin/*` and `/api/admin/*` request
+
+### Firestore Collections
+
+```
+/site_theme/config          ← singleton: all CSS colour tokens
+/shop_info/config           ← singleton: name, tagline, description, address, phone, email, hours, social, logoUrl, logoPublicId
+/categories/{slug}          ← category docs (label, slug, emoji, description, order)
+/products/{slug}            ← product docs (name, imageUrl, inStock, featured, order…)
+/page_sections/{pageSlug_sectionKey}
+  └── /content_blocks/{key} ← CMS content (type: text|richtext|image|url|json, value)
+/contact_submissions/{id}   ← contact form submissions (status: new|read|replied)
+  └── /replies/{id}         ← admin reply thread
+```
 
 ---
 
@@ -141,293 +154,355 @@ Defined in `src/app/globals.css`:
 
 ```
 iux011-salam-smallgoods-website/
-├── public/                              # Static assets
+├── scripts/
+│   └── seed.mjs                         # Firestore seed script (run once)
 ├── src/
+│   ├── proxy.js                         # Next.js 16 middleware (auth guard)
 │   ├── lib/
-│   │   ├── products.js                  # Product + category data (12 products, 5 categories)
-│   │   └── shopInfo.js                  # Shop contact, address, trading hours
+│   │   ├── firebaseAdmin.js             # Firebase Admin SDK singleton
+│   │   ├── firebaseClient.js            # Firebase Client SDK singleton (auth only)
+│   │   ├── adminAuthHelper.js           # verifyAdminSession() helper
+│   │   ├── products.js                  # Firestore product/category fetchers
+│   │   ├── shopInfo.js                  # Firestore shop info fetcher
+│   │   ├── content.js                   # Firestore page section/content fetchers
+│   │   ├── theme.js                     # Firestore theme fetcher + CSS builder
+│   │   └── email.js                     # Resend reply email sender
 │   └── app/
-│       ├── globals.css                  # CSS custom properties + claymorphism utilities
-│       ├── layout.js                    # Root layout, metadata, Geist font setup
+│       ├── globals.css                  # Clay utility classes (no :root tokens)
+│       ├── layout.js                    # Root layout — async, injects theme CSS
 │       ├── page.js                      # Home page (/)
-│       ├── about/
-│       │   └── page.js                  # About page (/about)
+│       ├── about/page.js                # About page (/about)
 │       ├── products/
-│       │   ├── page.js                  # Products landing — category grid (/products)
+│       │   ├── page.js                  # Products landing (/products)
 │       │   └── [category-slug]/
-│       │       ├── page.js              # Category listing (/products/:category-slug)
+│       │       ├── page.js              # Category listing
 │       │       └── [product-slug]/
-│       │           └── page.js          # Product detail (/products/:category-slug/:product-slug)
-│       ├── contact/
-│       │   └── page.js                  # Contact page (/contact)
+│       │           └── page.js          # Product detail
+│       ├── contact/page.js              # Contact page (/contact)
+│       ├── actions/
+│       │   ├── products.js              # Server actions: CRUD for products
+│       │   ├── categories.js            # Server actions: CRUD for categories
+│       │   ├── shopInfo.js              # Server action: updateShopInfo
+│       │   ├── content.js               # Server action: saveSection
+│       │   └── theme.js                 # Server action: saveTheme
+│       ├── api/
+│       │   ├── contact/route.js         # POST — public contact form submission
+│       │   ├── auth/session/route.js    # POST/DELETE — session cookie management
+│       │   └── admin/
+│       │       ├── upload/route.js      # POST — Cloudinary signed upload params
+│       │       ├── contacts/route.js    # GET — list contact submissions
+│       │       └── contacts/[id]/
+│       │           ├── route.js         # GET/PATCH — submission detail + status
+│       │           └── reply/route.js   # POST — send reply email + store reply doc
+│       ├── admin/
+│       │   ├── login/page.js            # Admin login page (unguarded)
+│       │   └── (panel)/                 # Route group — all pages use AdminShell layout
+│       │       ├── layout.js
+│       │       ├── components/
+│       │       │   └── AdminShell.js    # Sidebar + header layout (Ant Design)
+│       │       ├── dashboard/page.js    # Dashboard — links to all sections
+│       │       ├── products/
+│       │       │   ├── page.js
+│       │       │   └── ProductsManager.js
+│       │       ├── categories/
+│       │       │   ├── page.js
+│       │       │   └── CategoriesManager.js
+│       │       ├── shop-info/
+│       │       │   ├── page.js
+│       │       │   └── ShopInfoForm.js
+│       │       ├── content/
+│       │       │   ├── page.js
+│       │       │   └── ContentEditor.js
+│       │       ├── design/
+│       │       │   ├── page.js
+│       │       │   └── DesignEditor.js
+│       │       └── contacts/
+│       │           ├── page.js
+│       │           ├── ContactsInbox.js
+│       │           └── [id]/
+│       │               ├── page.js
+│       │               └── ContactDetail.js
 │       └── components/
 │           ├── shared/
-│           │   ├── Navbar.js            # Site navigation (desktop + mobile drawer)
-│           │   └── Footer.js            # Site footer (3-col: Brand, Contact, Hours)
+│           │   ├── Navbar.js
+│           │   └── Footer.js
 │           ├── home/
-│           │   ├── Hero.js              # Hero — 2×2 featured product grid + stat strip
-│           │   ├── HomeCategories.js    # Category browse cards
-│           │   ├── WhyChooseUs.js       # 3 feature tiles (Halal, Fresh, Family)
-│           │   └── AboutSnippet.js      # About preview with stats and CTA
+│           │   ├── Hero.js
+│           │   ├── HomeCategories.js
+│           │   ├── WhyChooseUs.js
+│           │   └── AboutSnippet.js
 │           ├── about/
-│           │   ├── AboutHero.js         # About page banner
-│           │   ├── OurStory.js          # Story text + stat grid
-│           │   └── OurValues.js         # 3 value cards (Halal, Family, Fresh)
+│           │   ├── AboutHero.js
+│           │   ├── OurStory.js
+│           │   └── OurValues.js
 │           ├── products/
-│           │   ├── FilterBar.js         # Category filter pill buttons
-│           │   └── ProductCard.js       # Product card with image, stock badge, CTA
+│           │   ├── FilterBar.js
+│           │   └── ProductCard.js
 │           └── contact/
-│               ├── ContactForm.js       # Ant Design contact form
-│               └── ShopInfoCard.js      # Address, phone, email, trading hours
-├── package.json
+│               ├── ContactForm.js
+│               └── ShopInfoCard.js
 ├── next.config.mjs
-└── postcss.config.mjs
+└── package.json
 ```
 
 ---
 
-## Pages
+## Public Pages
 
 ### Home — `/`
 
-**File:** `src/app/page.js`
-
-| Section | Component | Description |
-|---------|-----------|-------------|
-| Hero | `Hero.js` | Overline, headline, description, CTA buttons, stat strip, 2×2 featured product image grid |
-| Categories | `HomeCategories.js` | Browse-by-category card grid with product counts |
-| Why Choose Us | `WhyChooseUs.js` | 3 clay tiles — Halal Certified, Fresh Daily Cuts, Family Recipe |
-| About Snippet | `AboutSnippet.js` | Shop story summary, stats, link to full About page |
-
----
+| Section | Component | Content Source |
+|---------|-----------|----------------|
+| Hero | `Hero.js` | Firestore `home_hero` content blocks + featured products |
+| Categories | `HomeCategories.js` | Firestore `/categories` + `home_homeCategories` blocks |
+| Why Choose Us | `WhyChooseUs.js` | Firestore `home_whyChooseUs` content blocks |
+| About Snippet | `AboutSnippet.js` | Firestore `home_aboutSnippet` content blocks |
 
 ### About — `/about`
 
-**File:** `src/app/about/page.js`
-
-| Section | Component | Description |
-|---------|-----------|-------------|
-| Banner | `AboutHero.js` | Red clay banner with page title |
-| Story | `OurStory.js` | 2-col layout — story text + stat cards (25+ years, 100% halal, etc.) |
-| Values | `OurValues.js` | 3 value cards — Halal Certified, Family Owned, Fresh Daily |
-
----
+| Section | Component | Content Source |
+|---------|-----------|----------------|
+| Banner | `AboutHero.js` | Firestore `about_aboutHero` blocks |
+| Story | `OurStory.js` | Firestore `about_ourStory` blocks |
+| Values | `OurValues.js` | Firestore `about_ourValues` blocks |
 
 ### Products — `/products`
 
-**File:** `src/app/products/page.js`
-
-- Category card grid — each card links to `/products/:category-slug`
-- Displays product count per category
-
----
+- Category grid from Firestore `/categories`
+- Links to `/products/:category-slug`
 
 ### Category — `/products/:category-slug`
 
-**File:** `src/app/products/[category-slug]/page.js`
-
-- Clay banner with category name
-- Breadcrumb navigation
-- Grid of `ProductCard` components for that category
+- Product grid filtered by `categorySlug` from Firestore
 - Statically generated via `generateStaticParams`
-
----
 
 ### Product Detail — `/products/:category-slug/:product-slug`
 
-**File:** `src/app/products/[category-slug]/[product-slug]/page.js`
-
-- Red hero banner with product image, name, category badge, stock status
-- Breadcrumb navigation
-- About This Product card with full `details` text
-- Sidebar: stock status indicator, Halal Certified card
-- Contact Us prompt card
-- Related products grid (up to 3 from the same category)
+- Full product detail from Firestore `/products/{slug}`
+- Related products (same category)
 - Statically generated via `generateStaticParams`
-
----
 
 ### Contact — `/contact`
 
-**File:** `src/app/contact/page.js`
+- `ContactForm.js` — POSTs to `POST /api/contact` → stored in Firestore
+- `ShopInfoCard.js` — reads from Firestore `shop_info/config`
 
-- Two-column layout (3:2, stacks on mobile):
-  - **Left:** Contact form — Name, Email, Phone, Message + submit
-  - **Right:** Shop info — address, phone, email, trading hours
-- Form built with Ant Design `Form`
-- On submit: shows success notification, resets fields
+---
+
+## Admin Panel
+
+All admin routes are at `/admin/*` and require a valid session cookie. Unauthenticated requests are redirected to `/admin/login`.
+
+### `/admin/login`
+
+Firebase email/password sign-in. On success, creates a 14-day `httpOnly` session cookie and redirects to `/admin/dashboard`.
+
+### `/admin/dashboard`
+
+Quick-access grid linking to all admin sections.
+
+### `/admin/products`
+
+- List all products in an Ant Design Table (name, category, image thumb, stock/featured toggles, actions)
+- Create and edit products via a Drawer form
+- Cloudinary image upload (signed upload flow — client uploads directly to Cloudinary)
+- Toggle `inStock` and `featured` inline via Switch components
+- Delete with confirmation
+- Changes `revalidatePath` the relevant public pages immediately
+
+### `/admin/categories`
+
+- List all categories with product count
+- Create, edit, delete via Drawer form
+- Delete is blocked if the category has products
+
+### `/admin/shop-info`
+
+- Upload and replace the shop logo (Cloudinary signed upload, stored as `logoUrl`/`logoPublicId`)
+- Edit shop name, tagline, description, address, phone, email, social links
+- Dynamic trading hours rows — add, remove, reorder inline
+
+### `/admin/content`
+
+- Tab per page (Home, About, Products, Contact)
+- Card per section within each page
+- Fields rendered by type:
+  - `text` → Input
+  - `richtext` → TextArea
+  - `url` → Input
+  - `json` → structured array editor (for stats, feature cards, value cards)
+- Save writes to Firestore and calls `revalidatePath` for the page
+
+### `/admin/design`
+
+- Colour pickers for all CSS token groups: Text/Surfaces, Card Surfaces, Shadows, Brand Accent, Status, Footer
+- Live preview pane: banner, clay card, buttons, footer swatch update as you pick
+- Save writes to `site_theme/config` and calls `revalidatePath('/', 'layout')` — all pages update globally
+
+### `/admin/contacts`
+
+- Inbox table with tabs: All / New / Read / Replied
+- New submissions shown in bold with a count badge
+- Click row → opens detail page
+
+### `/admin/contacts/[id]`
+
+- Full submission detail (name, email, phone, subject, message, received date)
+- Auto-marks submission as "read" on open
+- Reply thread (chronological history of previous replies)
+- Send reply form — dispatches via `POST /api/admin/contacts/[id]/reply`
+
+---
+
+## API Routes
+
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| `POST` | `/api/contact` | Public | Store contact form submission in Firestore |
+| `POST` | `/api/auth/session` | Public | Exchange Firebase ID token for session cookie |
+| `DELETE` | `/api/auth/session` | Public | Clear session cookie (logout) |
+| `POST` | `/api/admin/upload` | Admin | Return Cloudinary signed upload parameters |
+| `GET` | `/api/admin/contacts` | Admin | List contact submissions (optional `?status=` filter) |
+| `GET` | `/api/admin/contacts/[id]` | Admin | Submission detail + replies subcollection |
+| `PATCH` | `/api/admin/contacts/[id]` | Admin | Update submission status field |
+| `POST` | `/api/admin/contacts/[id]/reply` | Admin | Add reply doc, update status, send email via Resend |
 
 ---
 
 ## Data Layer
 
-All data lives in `src/lib/` and is imported directly by pages and components.
-
 ### `src/lib/products.js`
 
-**Exports:**
-- `products` — array of 12 product objects
-- `categories` — array of 5 category objects
-- `getProductBySlug(categorySlug, productSlug)` — returns a single product or `null`
-- `getProductsByCategory(categorySlug)` — returns filtered product array
-- `getCategoryBySlug(slug)` — returns a single category or `null`
+Async functions — all read from Firestore via Firebase Admin SDK:
 
-**Product object shape:**
+| Function | Description |
+|----------|-------------|
+| `getProducts()` | All products ordered by `order` |
+| `getFeaturedProducts()` | Products where `featured === true` |
+| `getProductsByCategory(slug)` | Products filtered by `categorySlug` |
+| `getProductBySlug(categorySlug, productSlug)` | Single product lookup |
+| `getCategories()` | All categories ordered by `order` |
+| `getCategoryBySlug(slug)` | Single category lookup |
+
+All functions apply `serializeDoc()` to convert Firestore Timestamps to ISO strings before returning.
+
+**Product document shape (Firestore):**
 
 ```js
 {
-  id: 1,
   slug: 'beef-sausages',
   name: 'Beef Sausages',
-  category: 'Beef',
   categorySlug: 'beef',
-  description: '...',          // short — used on cards
-  details: '...',              // long — used on product detail page
-  image: 'https://...',        // placeholder from picsum.photos — replace with real images
+  description: '...',         // short — product card
+  details: '...',             // long — product detail page
+  imageUrl: 'https://...',    // Cloudinary URL (or picsum placeholder)
+  imagePublicId: null,        // Cloudinary public_id (if uploaded via admin)
   inStock: true,
-  featured: true,              // if true, shown in Hero 2×2 grid
+  featured: true,
+  order: 0,
+  createdAt: '2026-...',
+  updatedAt: '2026-...',
 }
 ```
-
-**Category object shape:**
-
-```js
-{
-  label: 'Beef',
-  slug: 'beef',
-  emoji: '🥩',
-  description: 'Premium halal beef cuts, mince & smallgoods',
-}
-```
-
-**Products included:**
-
-| # | Name | Category | In Stock | Featured |
-|---|------|----------|----------|----------|
-| 1 | Beef Sausages | Beef | Yes | Yes |
-| 2 | Lamb Chops | Lamb | Yes | Yes |
-| 3 | Chicken Wings | Chicken | Yes | Yes |
-| 4 | Beef Jerky | Jerky & Cured | No | Yes |
-| 5 | Lamb Mince | Lamb | Yes | No |
-| 6 | Chicken Breast Fillets | Chicken | Yes | No |
-| 7 | Beef Salami | Smallgoods | Yes | No |
-| 8 | Beef Mince | Beef | Yes | No |
-| 9 | Lamb Shank | Lamb | No | No |
-| 10 | Chicken Thigh Fillets | Chicken | No | No |
-| 11 | Beef Pastrami | Jerky & Cured | Yes | No |
-| 12 | Lamb Sausages | Smallgoods | Yes | No |
-
-> **Note:** All product images use `picsum.photos` placeholder URLs. Replace with real product photography before going live.
-
----
 
 ### `src/lib/shopInfo.js`
 
-Exports a single `shopInfo` object:
+`getShopInfo()` — reads `shop_info/config` from Firestore.
 
-```js
-{
-  name: 'Salam Small Goods',
-  tagline: '...',
-  description: '...',
-  address: '42 Mercer Street, Broadmeadows VIC 3047',
-  phone: '(03) 9305 4812',
-  email: 'hello@salamsmallgoods.com.au',
-  hours: [
-    { day: 'Monday – Friday', time: '7:00 AM – 6:00 PM' },
-    { day: 'Saturday', time: '7:00 AM – 5:00 PM' },
-    { day: 'Sunday', time: '8:00 AM – 2:00 PM' },
-  ],
-}
-```
+### `src/lib/content.js`
 
-> **Note:** All data in `src/lib/` is placeholder. Replace with verified real content before going live.
+| Function | Description |
+|----------|-------------|
+| `getSection(pageSlug, sectionKey)` | Returns flat `{ key: value }` map for a section; JSON blocks auto-parsed |
+| `getAdminPageSections(pageSlug)` | Returns sections + raw block data for the admin content editor |
+
+### `src/lib/theme.js`
+
+| Export | Description |
+|--------|-------------|
+| `getTheme()` | Reads `site_theme/config`; falls back to `DEFAULT_THEME` |
+| `buildThemeCss(theme)` | Returns `:root { --color-*: value; }` CSS string |
+| `DEFAULT_THEME` | Hardcoded fallback for all tokens |
+
+Token key → CSS var conversion: `colorAccent` → `--color-accent`
 
 ---
 
-## Components
+## Authentication
 
-### `Navbar.js`
-- `'use client'` — uses `usePathname` for active link and `useState` for drawer/dropdown
-- Desktop: horizontal pill nav links — active link styled with red clay button
-- Products link has a hover dropdown listing all categories
-- Mobile: hamburger opens Ant Design `Drawer` from the right with expandable Products sub-menu
-- Breakpoint: `640px`
+- **Provider:** Firebase Authentication (email/password)
+- **Admin user:** created manually in Firebase Console → Authentication
+- **Session:** `httpOnly; SameSite=Strict` cookie, 14-day expiry
+- **Guard:** `src/proxy.js` — verifies cookie on all `/admin/*` and `/api/admin/*` requests
+- **Verify helper:** `src/lib/adminAuthHelper.js` — `verifyAdminSession()` used in every admin API route
 
-### `Footer.js`
-- Server component
-- 3-column grid: Brand + tagline, Contact (address/phone/email with labels), Trading Hours
-- Dark warm brown background (`#1A0804` → `#2A1208`) — hardcoded (not CSS vars) for reliable rendering
-- Bottom bar: copyright line + "Developed by IUX IT Pty Ltd"
-- No emojis
+---
 
-### `Hero.js`
-- Server component
-- Imports featured products directly from `products.js`
-- Left: red overline, headline, description, two CTA buttons, stat strip (25+, 100%, 500+)
-- Right: 2×2 clickable grid of featured product images with name overlay — hidden on mobile
-- Background matches navbar (`#E8D0A8`) for a seamless top-of-page appearance
+## Environment Variables
 
-### `HomeCategories.js`
-- `'use client'` — uses `onMouseEnter`/`onMouseLeave` for hover lift effect
-- Clay card per category with description and product count badge
-- Links to `/products/:category-slug`
+Store in `.env.local` (never commit). Set the same variables in Vercel dashboard for production.
 
-### `WhyChooseUs.js`
-- Server component
-- 3 clay tiles with warm-palette gradients (terracotta tint, amber, olive)
-- Halal Certified / Fresh Daily Cuts / Family Recipe
+```bash
+# Firebase Client SDK (public — safe to expose)
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
 
-### `AboutSnippet.js`
-- Server component
-- Uses `.about-grid` responsive class
-- Inline stats (25+ years, 100% halal, 500+ regulars)
+# Firebase Admin SDK (server-only — keep secret)
+FIREBASE_ADMIN_PROJECT_ID=
+FIREBASE_ADMIN_CLIENT_EMAIL=
+FIREBASE_ADMIN_PRIVATE_KEY=         # keep \n escape sequences in the key
 
-### `AboutHero.js`
-- Server component — uses `.clay-banner` class
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 
-### `OurStory.js`
-- Server component
-- 2-col layout: story text (left) + image placeholder card with 2×2 stat cards (right)
+# Resend
+RESEND_API_KEY=
 
-### `OurValues.js`
-- Server component
-- 3 value cards with warm-palette gradients — Halal Certified, Family Owned, Fresh Daily
+# App
+NEXT_PUBLIC_SITE_URL=               # http://localhost:3000 locally, live URL on Vercel
+```
 
-### `FilterBar.js`
-- `'use client'` — calls `onChange` prop on button click
-- Reads categories from `src/lib/products.js`
-- Applies `.clay-filter-btn-active` to the selected category
-
-### `ProductCard.js`
-- Server component (stateless display)
-- `.product-image-container` — `aspect-ratio: 4/3`, `object-fit: cover` — ready for real images
-- Category badge (dark ink text on cream) — WCAG AA compliant at 11px
-- Stock badge — solid green (`#3E6B2A`) for In Stock, solid red (`#A83020`) for Out of Stock
-- "Read More →" links to product detail page
-
-### `ContactForm.js`
-- `'use client'` — uses Ant Design `Form`, `Input`, `message`
-- Fields: Name (required), Email (required + validation), Phone (optional), Message (required)
-- Simulates submission with 800ms delay — replace with real API call before going live
-
-### `ShopInfoCard.js`
-- Server component
-- Pulls data from `shopInfo`
-- Clickable phone (`tel:`) and email (`mailto:`) links
+To generate the Firebase Admin credentials: Firebase Console → Project Settings → Service Accounts → Generate new private key → copy `project_id`, `client_email`, `private_key`.
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+
-- npm
 
-### Install dependencies
+- Node.js 18+
+- A Firebase project with Authentication (email/password) and Firestore enabled
+- A Cloudinary account
+- A Resend account with `salamsmallgoods.com.au` domain verified (for email replies)
+
+### Install
 
 ```bash
 npm install
+```
+
+### Configure
+
+Copy all variables listed in [Environment Variables](#environment-variables) into `.env.local`.
+
+### Seed Firestore
+
+Run once to populate all collections with the prototype data:
+
+```bash
+node --env-file=.env.local scripts/seed.mjs
+```
+
+The script is idempotent — it skips collections that already contain data. To overwrite existing data:
+
+```bash
+node --env-file=.env.local scripts/seed.mjs --reset
 ```
 
 ### Run development server
@@ -436,7 +511,8 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) for the public site.  
+Open [http://localhost:3000/admin/login](http://localhost:3000/admin/login) for the admin panel.
 
 ---
 
@@ -444,20 +520,38 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 | Script | Command | Description |
 |--------|---------|-------------|
-| Dev server | `npm run dev` | Start with hot reload |
+| Dev server | `npm run dev` | Start with Turbopack hot reload |
 | Build | `npm run build` | Production build |
 | Start | `npm run start` | Serve production build |
 | Lint | `npm run lint` | Run ESLint |
+| Seed | `node --env-file=.env.local scripts/seed.mjs` | Populate Firestore |
 
 ---
 
-## Pre-Launch Checklist
+## Deployment
 
-- [ ] Replace all `picsum.photos` placeholder images with real product photography
-- [ ] Verify all shop info (address, phone, email, hours) in `src/lib/shopInfo.js`
-- [ ] Connect `ContactForm.js` to a real form submission API or email service
-- [ ] Update product data in `src/lib/products.js` with real names, descriptions, and stock status
-- [ ] Add real social media links to footer
-- [ ] Test all pages on mobile (375px) and tablet (768px)
-- [ ] Run accessibility contrast check on final colour values
-- [ ] Configure `next.config.mjs` `images.remotePatterns` when switching to Next.js `<Image>` component
+### Vercel
+
+1. Push to GitHub and connect the repo in Vercel
+2. Set all environment variables from `.env.local` in Vercel → Project Settings → Environment Variables
+3. Deploy — Vercel auto-detects Next.js and builds accordingly
+
+### Resend Domain Verification
+
+Before admin email replies will deliver, verify `salamsmallgoods.com.au` in the Resend dashboard (add the required DNS TXT/MX records). The admin reply UI works regardless; only the outbound email delivery depends on this.
+
+### Pre-Launch Checklist
+
+- [ ] Seed Firestore: `node --env-file=.env.local scripts/seed.mjs`
+- [ ] Admin login flow tested (wrong password rejected, redirect to dashboard on success)
+- [ ] All `/admin/*` routes redirect to login when unauthenticated
+- [ ] Products CRUD verified — create, edit, delete, image upload
+- [ ] Content editor verified — hero title change reflects on home page
+- [ ] Design token change verified — accent colour updates all CTAs globally
+- [ ] Contact form submission appears in admin inbox with status "New"
+- [ ] Admin reply sends email and updates status to "Replied"
+- [ ] All product images replaced with real photography (currently using Cloudinary-hosted or picsum placeholders)
+- [ ] Real shop info verified in Firestore (address, phone, email, hours)
+- [ ] Domain `salamsmallgoods.com.au` verified in Resend
+- [ ] `NEXT_PUBLIC_SITE_URL` updated to live URL in Vercel
+- [ ] `next build` passes with no errors
