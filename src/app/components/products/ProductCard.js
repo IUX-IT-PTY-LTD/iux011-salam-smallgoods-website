@@ -14,7 +14,7 @@ export default function ProductCard({ product }) {
       {/* Product image */}
       <div className="product-image-container">
         <img
-          src={product.image}
+          src={product.imageUrl}
           alt={product.name}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
