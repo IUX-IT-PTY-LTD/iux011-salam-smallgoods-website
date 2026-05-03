@@ -139,7 +139,7 @@ Contact form
 
 ```
 /site_theme/config          ← singleton: all CSS colour tokens
-/shop_info/config           ← singleton: name, address, phone, hours, social
+/shop_info/config           ← singleton: name, tagline, description, address, phone, email, hours, social, logoUrl, logoPublicId
 /categories/{slug}          ← category docs (label, slug, emoji, description, order)
 /products/{slug}            ← product docs (name, imageUrl, inStock, featured, order…)
 /page_sections/{pageSlug_sectionKey}
@@ -318,6 +318,7 @@ Quick-access grid linking to all admin sections.
 
 ### `/admin/shop-info`
 
+- Upload and replace the shop logo (Cloudinary signed upload, stored as `logoUrl`/`logoPublicId`)
 - Edit shop name, tagline, description, address, phone, email, social links
 - Dynamic trading hours rows — add, remove, reorder inline
 
