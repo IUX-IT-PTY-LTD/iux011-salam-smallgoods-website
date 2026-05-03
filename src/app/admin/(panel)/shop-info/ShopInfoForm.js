@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Form, Input, Button, App, Typography } from 'antd';
+import { Form, Input, Button, App, Typography, Upload, Space } from 'antd';
 import {
   SaveOutlined, PlusOutlined, DeleteOutlined,
   ShopOutlined, PhoneOutlined, MailOutlined, HomeOutlined,
-  FacebookOutlined, InstagramOutlined,
+  FacebookOutlined, InstagramOutlined, UploadOutlined,
 } from '@ant-design/icons';
 import { updateShopInfo } from '@/app/actions/shopInfo';
 
@@ -36,6 +36,9 @@ export default function ShopInfoForm({ initialData }) {
   const [activeSection, setActive]  = useState('basic');
   const [dirtySections, setDirty]   = useState({});
   const [isPending, startTransition] = useTransition();
+  const [logoUrl, setLogoUrl]               = useState(initialData?.logoUrl ?? '');
+  const [logoPublicId, setLogoPublicId]     = useState(initialData?.logoPublicId ?? '');
+  const [logoUploading, setLogoUploading]   = useState(false);
 
   const isAnyDirty = Object.values(dirtySections).some(Boolean);
 
@@ -52,6 +55,35 @@ export default function ShopInfoForm({ initialData }) {
       for (const s of touched) next[s] = true;
       return next;
     });
+  }
+
+  async function handleLogoUpload({ file, onSuccess, onError }) {
+    setLogoUploading(true);
+    try {
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ folder: 'salam-smallgoods/branding' }),
+      });
+      const { signature, timestamp, cloudName, apiKey, folder } = await res.json();
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('signature', signature);
+      fd.append('timestamp', timestamp);
+      fd.append('api_key', apiKey);
+      fd.append('folder', folder);
+      const up = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: 'POST', body: fd });
+      const result = await up.json();
+      setLogoUrl(result.secure_url);
+      setLogoPublicId(result.public_id);
+      markDirty('basic');
+      onSuccess?.(result);
+    } catch (err) {
+      message.error('Logo upload failed');
+      onError?.(err);
+    } finally {
+      setLogoUploading(false);
+    }
   }
 
   function addHour() {
@@ -87,6 +119,8 @@ export default function ShopInfoForm({ initialData }) {
             facebook:  values.facebook ?? '',
             instagram: values.instagram ?? '',
           },
+          logoUrl,
+          logoPublicId,
         });
         setDirty({});
         message.success('Shop info saved');
@@ -211,6 +245,42 @@ export default function ShopInfoForm({ initialData }) {
             >
               {activeSection === 'basic' && (
                 <>
+                  {/* ── Logo ── */}
+                  <div style={{ marginBottom: 24 }}>
+                    <div style={{ fontWeight: 600, color: '#2A0D04', fontSize: 14, marginBottom: 8 }}>Logo</div>
+                    {logoUrl ? (
+                      <div>
+                        <div style={{
+                          display: 'inline-block', padding: 10, marginBottom: 10,
+                          borderRadius: 10, border: '1.5px solid #E8C098', background: '#FFFAF2',
+                        }}>
+                          <img src={logoUrl} alt="Logo" style={{ height: 56, maxWidth: 200, objectFit: 'contain', display: 'block' }} />
+                        </div>
+                        <Space>
+                          <Upload showUploadList={false} customRequest={handleLogoUpload} accept="image/*">
+                            <Button size="small" icon={<UploadOutlined />} loading={logoUploading}>Replace</Button>
+                          </Upload>
+                          <Button size="small" danger onClick={() => { setLogoUrl(''); setLogoPublicId(''); markDirty('basic'); }}>Remove</Button>
+                        </Space>
+                      </div>
+                    ) : (
+                      <Upload.Dragger
+                        showUploadList={false}
+                        customRequest={handleLogoUpload}
+                        accept="image/*"
+                        style={{ borderRadius: 10, background: '#FFFAF2', borderColor: '#C4956A', maxWidth: 320 }}
+                      >
+                        <div style={{ padding: '12px 0' }}>
+                          <div style={{ fontSize: 28, marginBottom: 6 }}>🖼️</div>
+                          <p style={{ fontWeight: 600, color: '#2A0D04', margin: 0, fontSize: 13 }}>
+                            {logoUploading ? 'Uploading…' : 'Drop logo here, or click to browse'}
+                          </p>
+                          <p style={{ fontSize: 11, color: '#7A5040', margin: '4px 0 0' }}>PNG or SVG recommended</p>
+                        </div>
+                      </Upload.Dragger>
+                    )}
+                  </div>
+
                   <Form.Item
                     name="name"
                     label={<span style={{ fontWeight: 600, color: '#2A0D04' }}>Shop Name</span>}
