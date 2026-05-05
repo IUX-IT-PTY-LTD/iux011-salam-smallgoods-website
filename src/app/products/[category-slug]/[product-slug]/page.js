@@ -1,6 +1,12 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import NavbarServer from '../../../components/shared/NavbarServer';
+import ProductImageViewer from './ProductImageViewer';
+
+function optimizeCloudinaryUrl(url, w, h) {
+  if (!url || !url.includes('res.cloudinary.com')) return url;
+  return url.replace('/upload/', `/upload/c_fill,w_${w},h_${h},q_auto,f_auto/`);
+}
 import Footer from '../../../components/shared/Footer';
 import ProductCard from '../../../components/products/ProductCard';
 import { getProducts, getCategoryBySlug, getProductBySlug, getProductsByCategory } from '@/lib/products';
@@ -53,9 +59,11 @@ export default async function ProductPage({ params }) {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 40, alignItems: 'center' }}>
-              <div style={{ borderRadius: 20, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.25)', aspectRatio: '4 / 3' }}>
-                <img src={product.imageUrl} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-              </div>
+              <ProductImageViewer
+                thumbUrl={optimizeCloudinaryUrl(product.imageUrl, 480, 360)}
+                fullUrl={product.imageUrl}
+                alt={product.name}
+              />
 
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>

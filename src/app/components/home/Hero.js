@@ -1,6 +1,11 @@
 import Link from 'next/link';
 import { getFeaturedProducts } from '@/lib/products';
 
+function optimizeCloudinaryUrl(url, w, h) {
+  if (!url || !url.includes('res.cloudinary.com')) return url;
+  return url.replace('/upload/', `/upload/c_fill,w_${w},h_${h},q_auto,f_auto/`);
+}
+
 const DEFAULT_STATS = [
   { value: '25+', label: 'Years in Broadmeadows' },
   { value: '100%', label: 'Halal Certified' },
@@ -58,11 +63,15 @@ export default async function Hero({ content = {} }) {
         </div>
 
         {/* ── Right column: product image grid ── */}
-        <div className="hero-visual" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 12, aspectRatio: '1' }}>
+        <div className="hero-visual" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           {featured.map((product) => (
             <Link key={product.slug} href={`/products/${product.categorySlug}/${product.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
-              <div className="clay-card" style={{ height: '100%', overflow: 'hidden', borderRadius: 20, position: 'relative', minHeight: 160 }}>
-                <img src={product.imageUrl} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              <div className="clay-card" style={{ position: 'relative', aspectRatio: '1', overflow: 'hidden', borderRadius: 20 }}>
+                <img
+                  src={optimizeCloudinaryUrl(product.imageUrl, 600, 600)}
+                  alt={product.name}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
                 <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(42,13,4,0.75) 0%, transparent 100%)', padding: '20px 12px 10px' }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#fff', lineHeight: 1.2 }}>{product.name}</div>
                 </div>
