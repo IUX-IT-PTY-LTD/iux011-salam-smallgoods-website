@@ -16,6 +16,42 @@ import {
 const { TextArea } = Input;
 const { Title, Text } = Typography;
 
+// ─── Image pre-processing ─────────────────────────────────────────────────────
+
+const MAX_FILE_BYTES = 10 * 1024 * 1024;
+const MAX_DIMENSION  = 1200;
+const JPEG_QUALITY   = 0.85;
+
+async function preprocessImage(file) {
+  if (file.size > MAX_FILE_BYTES) throw new Error('Image must be under 10 MB.');
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+        const ratio = Math.min(MAX_DIMENSION / width, MAX_DIMENSION / height);
+        width  = Math.round(width  * ratio);
+        height = Math.round(height * ratio);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width  = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      canvas.toBlob(
+        (blob) => blob
+          ? resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }))
+          : reject(new Error('Image processing failed.')),
+        'image/jpeg',
+        JPEG_QUALITY
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not read image.')); };
+    img.src = url;
+  });
+}
+
 // ─── Cloudinary upload helper ─────────────────────────────────────────────────
 
 async function uploadToCloudinary(file) {
@@ -52,7 +88,7 @@ function ImageUpload({ imageUrl, onUpload, onRemove, uploading }) {
           />
         </div>
         <Space>
-          <Upload showUploadList={false} customRequest={onUpload} accept="image/*">
+          <Upload showUploadList={false} customRequest={onUpload} accept=".jpg,.jpeg,.png,image/jpeg,image/png">
             <Button size="small" icon={<UploadOutlined />} loading={uploading}>
               Replace image
             </Button>
@@ -67,7 +103,7 @@ function ImageUpload({ imageUrl, onUpload, onRemove, uploading }) {
     <Upload.Dragger
       showUploadList={false}
       customRequest={onUpload}
-      accept="image/*"
+      accept=".jpg,.jpeg,.png,image/jpeg,image/png"
       style={{
         borderRadius: 10,
         background: '#FFFAF2',
@@ -81,7 +117,7 @@ function ImageUpload({ imageUrl, onUpload, onRemove, uploading }) {
           {uploading ? 'Uploading…' : 'Drop image here, or click to browse'}
         </p>
         <p style={{ fontSize: 12, color: '#7A5040', margin: '4px 0 0' }}>
-          JPG, PNG or WebP — max 10 MB
+          JPG or PNG · Resized to max 1200 px · max 10 MB
         </p>
       </div>
     </Upload.Dragger>
@@ -169,7 +205,8 @@ export default function ProductsManager({ initialProducts, categories }) {
   async function handleImageUpload({ file }) {
     setUploading(true);
     try {
-      const result = await uploadToCloudinary(file);
+      const optimised = await preprocessImage(file);
+      const result = await uploadToCloudinary(optimised);
       if (result.secure_url) {
         setImageUrl(result.secure_url);
         setImagePublicId(result.public_id);
@@ -177,8 +214,8 @@ export default function ProductsManager({ initialProducts, categories }) {
       } else {
         message.error('Upload failed');
       }
-    } catch {
-      message.error('Upload error');
+    } catch (err) {
+      message.error(err.message || 'Upload error');
     } finally {
       setUploading(false);
     }
