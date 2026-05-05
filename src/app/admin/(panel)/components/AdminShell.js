@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { Layout, Menu, Button, App } from 'antd';
 import {
@@ -29,7 +30,7 @@ const menuItems = [
   { key: '/admin/contacts', icon: <MailOutlined />, label: 'Contacts' },
 ];
 
-export default function AdminShell({ children }) {
+export default function AdminShell({ children, logoUrl }) {
   const pathname = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
@@ -54,54 +55,58 @@ export default function AdminShell({ children }) {
         width={220}
         style={{ background: '#1A0804' }}
       >
-        {/* Brand */}
-        <div
-          style={{
-            padding: collapsed ? '18px 12px' : '18px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+
+          {/* Logo */}
+          <div style={{
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
+            padding: '20px 0',
             borderBottom: '1px solid rgba(255,255,255,0.08)',
             marginBottom: 8,
-            minHeight: 64,
-          }}
-        >
-          <span style={{ fontSize: 22, flexShrink: 0 }}>🥩</span>
+          }}>
+            {logoUrl
+              ? <div style={{ position: 'relative', width: collapsed ? 40 : 72, height: collapsed ? 40 : 72, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, transition: 'width 0.2s, height 0.2s' }}>
+                  <Image src={logoUrl} alt="Logo" fill priority style={{ objectFit: 'cover', objectPosition: 'center' }} />
+                </div>
+              : <span style={{ fontSize: collapsed ? 22 : 32 }}>🥩</span>
+            }
+          </div>
+
+          {/* Nav menu */}
+          <Menu
+            mode="inline"
+            selectedKeys={[activeKey]}
+            theme="dark"
+            style={{ background: '#1A0804', border: 'none', fontSize: 14, flex: 1 }}
+            items={menuItems.map((item) => ({
+              key: item.key,
+              icon: item.icon,
+              label: (
+                <Link href={item.key} style={{ color: 'inherit' }}>
+                  {item.label}
+                </Link>
+              ),
+            }))}
+          />
+
+          {/* Footer */}
           {!collapsed && (
-            <div>
-              <div style={{ fontWeight: 800, fontSize: 13, color: '#EDD5B0', lineHeight: 1.2 }}>
-                Salam Admin
-              </div>
-              <div
-                style={{
-                  fontSize: 10,
-                  color: '#CC3A20',
-                  fontWeight: 700,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Control Panel
-              </div>
+            <div style={{
+              padding: '14px 16px',
+              borderTop: '1px solid rgba(255,255,255,0.08)',
+              textAlign: 'center',
+              fontSize: 11,
+              color: 'rgba(255,255,255,0.3)',
+              lineHeight: 1.5,
+            }}>
+              Developed by<br />
+              <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}><a href='https://iuxit.com.au/'>IUX IT Pty Ltd</a> </span>
+              <br />
+              <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: 10 }}>v1.0.0</span>
             </div>
           )}
-        </div>
 
-        <Menu
-          mode="inline"
-          selectedKeys={[activeKey]}
-          theme="dark"
-          style={{ background: '#1A0804', border: 'none', fontSize: 14 }}
-          items={menuItems.map((item) => ({
-            key: item.key,
-            icon: item.icon,
-            label: (
-              <Link href={item.key} style={{ color: 'inherit' }}>
-                {item.label}
-              </Link>
-            ),
-          }))}
-        />
+        </div>
       </Sider>
 
       <Layout>
@@ -124,10 +129,10 @@ export default function AdminShell({ children }) {
             style={{ color: '#B89070', fontSize: 16 }}
           />
           <Button
-            type="text"
+            danger
             icon={<LogoutOutlined />}
             onClick={handleLogout}
-            style={{ color: '#B89070', fontSize: 13 }}
+            style={{ fontSize: 13 }}
           >
             Sign Out
           </Button>

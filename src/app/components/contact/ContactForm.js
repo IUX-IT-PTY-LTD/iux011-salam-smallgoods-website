@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Form, Input, App } from 'antd';
+import { Form, Input } from 'antd';
 
 const { TextArea } = Input;
 
@@ -14,12 +14,13 @@ const INPUT_STYLE = {
 };
 
 export default function ContactForm() {
-  const { message } = App.useApp();
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
+  const [notice, setNotice] = useState(null); // { type: 'success' | 'error', text: string }
 
   const handleSubmit = async (values) => {
     setSubmitting(true);
+    setNotice(null);
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -28,9 +29,9 @@ export default function ContactForm() {
       });
       if (!res.ok) throw new Error('Failed to send');
       form.resetFields();
-      message.success("Message sent! We'll get back to you shortly.");
+      setNotice({ type: 'success', text: "Message sent! We'll get back to you shortly." });
     } catch {
-      message.error('Something went wrong. Please try again.');
+      setNotice({ type: 'error', text: 'Something went wrong. Please try again.' });
     } finally {
       setSubmitting(false);
     }
@@ -84,6 +85,17 @@ export default function ContactForm() {
             style={{ ...INPUT_STYLE, resize: 'vertical' }}
           />
         </Form.Item>
+
+        {notice && (
+          <div style={{
+            marginBottom: 16, padding: '12px 16px', borderRadius: 12, fontSize: 14, fontWeight: 600,
+            background: notice.type === 'success' ? '#F0FBF0' : '#FFF0EE',
+            color:      notice.type === 'success' ? '#2E7D32' : '#C62828',
+            border:     `1.5px solid ${notice.type === 'success' ? '#A5D6A7' : '#FFCDD2'}`,
+          }}>
+            {notice.type === 'success' ? '✓ ' : '✕ '}{notice.text}
+          </div>
+        )}
 
         <Form.Item style={{ marginBottom: 0, marginTop: 8 }}>
           <button
