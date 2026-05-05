@@ -177,10 +177,11 @@ iux011-salam-smallgoods-website/
 │       │   └── [category-slug]/
 │       │       ├── page.js              # Category listing
 │       │       └── [product-slug]/
-│       │           └── page.js          # Product detail
+│       │           ├── page.js          # Product detail
+│       │           └── ProductImageViewer.js  # Client component — lightbox popup for full image
 │       ├── contact/page.js              # Contact page (/contact)
 │       ├── actions/
-│       │   ├── products.js              # Server actions: CRUD for products
+│       │   ├── products.js              # Server actions: CRUD + bulk delete for products
 │       │   ├── categories.js            # Server actions: CRUD for categories
 │       │   ├── shopInfo.js              # Server action: updateShopInfo
 │       │   ├── content.js               # Server action: saveSection
@@ -253,7 +254,7 @@ iux011-salam-smallgoods-website/
 
 | Section | Component | Content Source |
 |---------|-----------|----------------|
-| Hero | `Hero.js` | Firestore `home_hero` content blocks + featured products |
+| Hero | `Hero.js` | Firestore `home_hero` content blocks + up to 4 featured products displayed in a 2×2 square grid; images served as Cloudinary-optimised 600×600 `c_fill` crops |
 | Categories | `HomeCategories.js` | Firestore `/categories` + `home_homeCategories` blocks |
 | Why Choose Us | `WhyChooseUs.js` | Firestore `home_whyChooseUs` content blocks |
 | About Snippet | `AboutSnippet.js` | Firestore `home_aboutSnippet` content blocks |
@@ -279,6 +280,8 @@ iux011-salam-smallgoods-website/
 ### Product Detail — `/products/:category-slug/:product-slug`
 
 - Full product detail from Firestore `/products/{slug}`
+- Product image displayed at a fixed `4:3` aspect ratio, served as a Cloudinary-optimised 480×360 `c_fill` crop
+- "Full image" button opens a lightbox popup (`ProductImageViewer.js` client component) — full-resolution image shown in a dark overlay; close via ✕ button, backdrop click, or Escape key; Cloudinary URL is never exposed in the browser address bar
 - Related products (same category)
 - Statically generated via `generateStaticParams`
 
@@ -293,6 +296,8 @@ iux011-salam-smallgoods-website/
 
 All admin routes are at `/admin/*` and require a valid session cookie. Unauthenticated requests are redirected to `/admin/login`.
 
+> **Navbar logo** — The public site navbar displays only the shop logo (no name or tagline text). The logo is rendered as a 64 × 64 px circle (`objectFit: cover`) loaded with `priority` to avoid fade-in. Upload a square PNG with a background via `/admin/shop-info`. The mobile drawer shows the same logo at 44 × 44 px.
+
 ### `/admin/login`
 
 Firebase email/password sign-in. On success, creates a 14-day `httpOnly` session cookie and redirects to `/admin/dashboard`.
@@ -304,16 +309,20 @@ Quick-access grid linking to all admin sections.
 ### `/admin/products`
 
 - List all products in an Ant Design Table (name, category, image thumb, stock/featured toggles, actions)
+- Pagination with page-size switcher (10 / 20 / 50) and a total count display
+- Row checkboxes for multi-select; bulk delete button appears in the toolbar when rows are selected — uses a Firestore batch commit via `bulkDeleteProducts` server action
 - Create and edit products via a Drawer form
 - Cloudinary image upload (signed upload flow — client uploads directly to Cloudinary)
+  - Client-side pre-processing before upload: accepts JPG / PNG only (max 10 MB input), resizes to max 1200 px on the longest side, re-encodes as JPEG at 0.85 quality → Cloudinary receives ~200–400 KB regardless of input size
 - Toggle `inStock` and `featured` inline via Switch components
-- Delete with confirmation
+- Delete individual products with confirmation; bulk delete selected rows with a single confirmation
 - Changes `revalidatePath` the relevant public pages immediately
 
 ### `/admin/categories`
 
 - List all categories with product count
 - Create, edit, delete via Drawer form
+- Emoji field uses a searchable picker popover (curated set of ~30 food/butcher emojis) instead of a plain text input
 - Delete is blocked if the category has products
 
 ### `/admin/shop-info`
@@ -383,6 +392,8 @@ Async functions — all read from Firestore via Firebase Admin SDK:
 | `getProductBySlug(categorySlug, productSlug)` | Single product lookup |
 | `getCategories()` | All categories ordered by `order` |
 | `getCategoryBySlug(slug)` | Single category lookup |
+
+**Server actions (`src/app/actions/products.js`)** also include `bulkDeleteProducts(items)` — accepts an array of `{ slug, categorySlug }` objects, deletes them in a single Firestore batch, and revalidates affected paths once.
 
 All functions apply `serializeDoc()` to convert Firestore Timestamps to ISO strings before returning.
 
