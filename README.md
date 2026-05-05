@@ -200,7 +200,7 @@ iux011-salam-smallgoods-website/
 │       │   └── (panel)/                 # Route group — all pages use AdminShell layout
 │       │       ├── layout.js
 │       │       ├── components/
-│       │       │   └── AdminShell.js    # Sidebar + header layout (Ant Design)
+│       │       │   └── AdminShell.js    # Sidebar + header layout (Ant Design); logo from shop_info at top, "Developed by IUX IT Pty Ltd v1.0.0" footer pinned to bottom
 │       │       ├── dashboard/page.js    # Dashboard — links to all sections
 │       │       ├── products/
 │       │       │   ├── page.js
@@ -297,6 +297,8 @@ iux011-salam-smallgoods-website/
 All admin routes are at `/admin/*` and require a valid session cookie. Unauthenticated requests are redirected to `/admin/login`.
 
 > **Navbar logo** — The public site navbar displays only the shop logo (no name or tagline text). The logo is rendered as a 64 × 64 px circle (`objectFit: cover`) loaded with `priority` to avoid fade-in. Upload a square PNG with a background via `/admin/shop-info`. The mobile drawer shows the same logo at 44 × 44 px.
+>
+> **Admin sidebar logo** — The admin panel sidebar also shows the shop logo (72 × 72 px circle when expanded, 40 × 40 px when collapsed) fetched from `shop_info/config` via `PanelLayout` and passed as a `logoUrl` prop to `AdminShell`. Falls back to the 🥩 emoji if no logo has been uploaded yet.
 
 ### `/admin/login`
 
