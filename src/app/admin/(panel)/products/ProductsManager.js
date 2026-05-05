@@ -10,7 +10,7 @@ import {
   UploadOutlined, SearchOutlined, EyeOutlined,
 } from '@ant-design/icons';
 import {
-  createProduct, updateProduct, deleteProduct, toggleProductStock,
+  createProduct, updateProduct, deleteProduct, toggleProductStock, bulkDeleteProducts,
 } from '@/app/actions/products';
 
 const { TextArea } = Input;
@@ -156,6 +156,7 @@ export default function ProductsManager({ initialProducts, categories }) {
   const [isPending, startTransition] = useTransition();
   const [search, setSearch]         = useState('');
   const [categoryFilter, setCategoryFilter] = useState(null);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const categoryOptions = categories.map((c) => ({
     value: c.slug,
@@ -268,6 +269,35 @@ export default function ProductsManager({ initialProducts, categories }) {
             resolve();
           } catch (err) {
             message.error(err.message || 'Delete failed');
+            reject(err);
+          }
+        });
+      }),
+    });
+  }
+
+  // ─── Bulk delete ──────────────────────────────────────────────────────────
+
+  function confirmBulkDelete() {
+    modal.confirm({
+      title: `Delete ${selectedRowKeys.length} product${selectedRowKeys.length !== 1 ? 's' : ''}?`,
+      content: 'These products will be permanently removed and cannot be recovered.',
+      okText: 'Delete permanently',
+      okButtonProps: { danger: true },
+      cancelText: 'Cancel',
+      onOk: () => new Promise((resolve, reject) => {
+        startTransition(async () => {
+          try {
+            const items = products
+              .filter((p) => selectedRowKeys.includes(p.slug))
+              .map((p) => ({ slug: p.slug, categorySlug: p.categorySlug }));
+            await bulkDeleteProducts(items);
+            setProducts((prev) => prev.filter((p) => !selectedRowKeys.includes(p.slug)));
+            setSelectedRowKeys([]);
+            message.success(`${items.length} product${items.length !== 1 ? 's' : ''} deleted`);
+            resolve();
+          } catch (err) {
+            message.error(err.message || 'Bulk delete failed');
             reject(err);
           }
         });
@@ -431,7 +461,7 @@ export default function ProductsManager({ initialProducts, categories }) {
             prefix={<SearchOutlined style={{ color: '#C4956A' }} />}
             placeholder="Search products…"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => { setSearch(e.target.value); setSelectedRowKeys([]); }}
             allowClear
             style={{ maxWidth: 260, borderRadius: 8 }}
           />
@@ -439,7 +469,7 @@ export default function ProductsManager({ initialProducts, categories }) {
             placeholder="All categories"
             options={categoryOptions}
             value={categoryFilter}
-            onChange={(v) => setCategoryFilter(v ?? null)}
+            onChange={(v) => { setCategoryFilter(v ?? null); setSelectedRowKeys([]); }}
             allowClear
             style={{ width: 180 }}
           />
@@ -448,6 +478,21 @@ export default function ProductsManager({ initialProducts, categories }) {
               {filteredProducts.length} result{filteredProducts.length !== 1 ? 's' : ''}
             </Text>
           )}
+          {selectedRowKeys.length > 0 && (
+            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <Text style={{ fontSize: 13, fontWeight: 600, color: '#CC3A20' }}>
+                {selectedRowKeys.length} selected
+              </Text>
+              <Button
+                size="small"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={confirmBulkDelete}
+              >
+                Delete selected
+              </Button>
+            </div>
+          )}
         </div>
 
         <Table
@@ -455,7 +500,16 @@ export default function ProductsManager({ initialProducts, categories }) {
           columns={columns}
           rowKey="slug"
           loading={isPending}
-          pagination={{ pageSize: 20, showSizeChanger: false, hideOnSinglePage: true }}
+          rowSelection={{
+            selectedRowKeys,
+            onChange: (keys) => setSelectedRowKeys(keys),
+          }}
+          pagination={{
+            pageSize: 20,
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50'],
+            showTotal: (total, range) => `${range[0]}–${range[1]} of ${total}`,
+          }}
           size="middle"
           onRow={(record) => ({
             style: { opacity: record.inStock ? 1 : 0.6 },

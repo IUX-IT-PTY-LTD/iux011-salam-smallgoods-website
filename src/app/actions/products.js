@@ -63,6 +63,19 @@ export async function toggleProductStock(slug, inStock, categorySlug) {
   revalidatePath('/');
 }
 
+export async function bulkDeleteProducts(items) {
+  const batch = adminDb.batch();
+  const categories = new Set();
+  for (const { slug, categorySlug } of items) {
+    batch.delete(adminDb.collection('products').doc(slug));
+    if (categorySlug) categories.add(categorySlug);
+  }
+  await batch.commit();
+  revalidatePath('/products');
+  for (const cat of categories) revalidatePath(`/products/${cat}`);
+  revalidatePath('/');
+}
+
 export async function toggleProductFeatured(slug, featured) {
   await adminDb.collection('products').doc(slug).update({
     featured,
