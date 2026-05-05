@@ -3,12 +3,118 @@
 import { useState, useTransition, useMemo } from 'react';
 import {
   Table, Button, Drawer, Form, Input, InputNumber,
-  Space, App, Typography,
+  Space, App, Typography, Popover,
 } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined, EyeOutlined } from '@ant-design/icons';
 import { createCategory, updateCategory, deleteCategory } from '@/app/actions/categories';
 
 const { Title, Text } = Typography;
+
+// ─── Emoji data ───────────────────────────────────────────────────────────────
+
+const EMOJI_LIST = [
+  { e: '🥩', l: 'meat steak beef' },
+  { e: '🍖', l: 'meat bone leg lamb' },
+  { e: '🍗', l: 'chicken leg poultry' },
+  { e: '🥓', l: 'bacon smallgoods cured' },
+  { e: '🌭', l: 'sausage hot dog' },
+  { e: '🍔', l: 'burger beef patty' },
+  { e: '🐄', l: 'cow beef cattle' },
+  { e: '🐑', l: 'sheep lamb' },
+  { e: '🐔', l: 'chicken poultry' },
+  { e: '🦴', l: 'bone marrow' },
+  { e: '🔪', l: 'knife butcher' },
+  { e: '🫙', l: 'jar preserved cured jerky' },
+  { e: '🥚', l: 'egg' },
+  { e: '🧅', l: 'onion' },
+  { e: '🧄', l: 'garlic' },
+  { e: '🌿', l: 'herb fresh greens' },
+  { e: '🌶️', l: 'chilli spice hot' },
+  { e: '🥘', l: 'stew casserole pan' },
+  { e: '🍲', l: 'soup stew pot' },
+  { e: '🫕', l: 'hotpot fondue' },
+  { e: '🌮', l: 'taco wrap' },
+  { e: '🥙', l: 'pita wrap kebab' },
+  { e: '🧆', l: 'falafel' },
+  { e: '🐟', l: 'fish seafood' },
+  { e: '🦐', l: 'prawn shrimp seafood' },
+  { e: '⭐', l: 'featured special star' },
+  { e: '🆕', l: 'new' },
+  { e: '🏷️', l: 'tag label' },
+  { e: '🎁', l: 'gift special bundle' },
+  { e: '🛒', l: 'shop cart' },
+];
+
+// ─── EmojiPicker ─────────────────────────────────────────────────────────────
+
+function EmojiPicker({ value, onChange }) {
+  const [open, setOpen]   = useState(false);
+  const [query, setQuery] = useState('');
+
+  const filtered = EMOJI_LIST.filter(
+    ({ l }) => !query || l.includes(query.toLowerCase())
+  );
+
+  const popoverContent = (
+    <div style={{ width: 288 }}>
+      <Input
+        autoFocus
+        placeholder="Search emojis…"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        style={{ marginBottom: 8, borderRadius: 8 }}
+      />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: 2, maxHeight: 180, overflowY: 'auto' }}>
+        {filtered.map(({ e }) => (
+          <button
+            key={e}
+            type="button"
+            title={EMOJI_LIST.find((x) => x.e === e)?.l}
+            onClick={() => { onChange(e); setOpen(false); setQuery(''); }}
+            style={{
+              fontSize: 22, padding: '5px 0', cursor: 'pointer',
+              border: 'none', borderRadius: 6, lineHeight: 1,
+              background: value === e ? '#F5E4C4' : 'transparent',
+            }}
+          >
+            {e}
+          </button>
+        ))}
+        {filtered.length === 0 && (
+          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '16px 0', color: '#9A8070', fontSize: 12 }}>
+            No results
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <Popover
+        content={popoverContent}
+        trigger="click"
+        open={open}
+        onOpenChange={(v) => { setOpen(v); if (!v) setQuery(''); }}
+        placement="bottomLeft"
+      >
+        <button
+          type="button"
+          style={{
+            fontSize: 28, width: 52, height: 52, borderRadius: 10, flexShrink: 0,
+            border: '1.5px solid #C4956A', background: '#FFFAF2',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          {value || '➕'}
+        </button>
+      </Popover>
+      <span style={{ fontSize: 12, color: '#9A8070' }}>
+        {value ? 'Click to change' : 'Click to pick an emoji'}
+      </span>
+    </div>
+  );
+}
 
 // ─── FormSection ─────────────────────────────────────────────────────────────
 
@@ -330,10 +436,9 @@ export default function CategoriesManager({ initialCategories, productCounts }) 
               name="emoji"
               label={<span style={{ fontWeight: 600, color: '#2A0D04' }}>Emoji Icon</span>}
               rules={[{ required: true, message: 'Emoji is required' }]}
-              extra="Single emoji shown alongside the category name"
               style={{ marginBottom: 0 }}
             >
-              <Input maxLength={4} placeholder="🥩" style={{ borderRadius: 8, maxWidth: 100 }} />
+              <EmojiPicker />
             </Form.Item>
           </FormSection>
 

@@ -32,23 +32,13 @@ export default function Navbar({ categories = [], shopInfo = null }) {
         }}
       >
         {/* Logo */}
-        <Link href="/" style={{ textDecoration: 'none' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            {shopInfo?.logoUrl
-              ? <div style={{ position: 'relative', height: 40, width: 120, flexShrink: 0 }}>
-                  <Image src={shopInfo.logoUrl} alt={shopInfo.name ?? 'Logo'} fill style={{ objectFit: 'contain', objectPosition: 'left center' }} />
-                </div>
-              : <span style={{ fontSize: 28 }}>🥩</span>
-            }
-            <div>
-              <div style={{ fontWeight: 800, fontSize: 18, color: '#2A0D04', lineHeight: 1.1 }}>
-                {shopInfo?.name ?? 'Salam Small Goods'}
+        <Link href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
+          {shopInfo?.logoUrl
+            ? <div style={{ position: 'relative', width: 64, height: 64, borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                <Image src={shopInfo.logoUrl} alt={shopInfo.name ?? 'Salam Small Goods'} fill priority style={{ objectFit: 'cover', objectPosition: 'center' }} />
               </div>
-              <div style={{ fontSize: 11, color: '#7A5040', fontWeight: 500 }}>
-                {shopInfo?.tagline ?? 'Premium Halal Meats'}
-              </div>
-            </div>
-          </div>
+            : <span style={{ fontSize: 36 }}>🥩</span>
+          }
         </Link>
 
         {/* Desktop nav */}
@@ -173,15 +163,11 @@ export default function Navbar({ categories = [], shopInfo = null }) {
       {/* Mobile Drawer */}
       <Drawer
         title={
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {shopInfo?.logoUrl
-              ? <div style={{ position: 'relative', height: 28, width: 80, flexShrink: 0 }}>
-                  <Image src={shopInfo.logoUrl} alt={shopInfo.name ?? 'Logo'} fill style={{ objectFit: 'contain', objectPosition: 'left center' }} />
-                </div>
-              : <span>🥩</span>
-            }
-            <span style={{ fontWeight: 800, color: '#2A0D04' }}>{shopInfo?.name ?? 'Salam Small Goods'}</span>
-          </div>
+          shopInfo?.logoUrl
+            ? <div style={{ position: 'relative', width: 44, height: 44, borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                <Image src={shopInfo.logoUrl} alt={shopInfo.name ?? 'Salam Small Goods'} fill priority style={{ objectFit: 'cover', objectPosition: 'center' }} />
+              </div>
+            : <span style={{ fontWeight: 800, color: '#2A0D04' }}>{shopInfo?.name ?? 'Salam Small Goods'}</span>
         }
         placement="right"
         onClose={() => setDrawerOpen(false)}
