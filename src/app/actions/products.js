@@ -26,6 +26,7 @@ export async function createProduct(data) {
 
   revalidatePath('/products');
   revalidatePath(`/products/${data.categorySlug}`);
+  revalidatePath(`/products/${data.categorySlug}/${slug}`);
   revalidatePath('/');
   return { slug };
 }
